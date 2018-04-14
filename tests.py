@@ -1,4 +1,4 @@
-import video-poker
+import video_poker
 
 
 
