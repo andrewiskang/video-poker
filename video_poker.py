@@ -1,4 +1,5 @@
 import random
+from collections import defaultdict
 
 
 class Card(object):
@@ -83,38 +84,20 @@ class Hand(list):
             card_info.append(card.info())
         print("    ".join(card_info))
 
-class PayoutTable(object):
-    # a PayoutTable lists all winning outcomes with their respective payouts
-    # also contains the logic necessary to determine a payout given a hand
-    def __init__(self, royal_straight_flush=800, straight_flush=50,
-                 four_of_a_kind=25, full_house=9, flush=6, straight=4,
-                 three_of_a_kind=3, two_pair=2, jacks_or_better=1):
-        # initializes a PayoutTable given specific payout amounts
-        # returns full pay (9/6) Jacks or Better by default
-        self.royal_straight_flush = royal_straight_flush
-        self.straight_flush = straight_flush
-        self.four_of_a_kind = four_of_a_kind
-        self.full_house = full_house
-        self.flush = flush
-        self.straight = straight
-        self.three_of_a_kind = three_of_a_kind
-        self.two_pair = two_pair
-        self.jacks_or_better = jacks_or_better
-
-    def is_winning_hand(self, hand):
+    def outcome(self):
         # returns the winning outcome of a Hand, and None if losing Hand
 
         # store a tally of ranks and suits in two separate Dictionaries
-        rank_tally = dict()
-        for card in hand:
+        rank_tally = defaultdict(int)
+        for card in self:
             rank_tally[card.rank_value] += 1
-        suit_tally = dict()
-        for card in hand:
+        suit_tally = defaultdict(int)
+        for card in self:
             suit_tally[card.suit] += 1
 
         # store max frequency of ranks and suits for evaluation purposes
         max_rank_value = max(rank_tally, key=rank_tally.get)
-        max_rank_tally = rank_tally[max_rank]
+        max_rank_tally = rank_tally[max_rank_value]
         max_suit = max(suit_tally, key=suit_tally.get)
         max_suit_tally = suit_tally[max_suit]
         # also store ranks and rank frequency
@@ -127,8 +110,8 @@ class PayoutTable(object):
         is_flush = (max_suit_tally == 5)
         # a straight is 5 consecutive ranks or a Royal (10, J, Q, K, A)
         lowest_rank = ranks[0]
-        is_straight = (ranks == range(lowest_rank, lowest_rank+5)) or
-                      (ranks == [1, 10, 11, 12, 13])
+        is_straight = (ranks == range(lowest_rank, lowest_rank+5) or
+                       ranks == [1, 10, 11, 12, 13])
 
         # logic progression to determine winning outcome of given Hand
 
@@ -136,7 +119,7 @@ class PayoutTable(object):
         if is_flush and is_straight:
             # a royal flush is 10, J, Q, K, A, all with the same suit
             if ranks == [1, 10, 11, 12, 13]:
-                return "Royal Straight Flush"
+                return "Royal Flush"
             else:
                 return "Straight Flush"
         # a four of a kind is 4 of the same rank (max rank tally = 4)
@@ -158,21 +141,34 @@ class PayoutTable(object):
         if rank_tallies == [1, 2, 2]:
             return "Two Pair"
         # Jacks or Better is one J, Q, K, A pair
-        if (rank_tallies == [1, 1, 1, 2]) and
-           (max_rank_value in [1, 11, 12, 13]):
+        if (rank_tallies == [1, 1, 1, 2] and
+            max_rank_value in [1, 11, 12, 13]):
             return "Jacks or Better"
         return None
 
-    def is_jacks_or_better(self, Hand):
-        # determines whether a Hand has one J, Q, K, A pair
-        for card in Hand:
+class Payout(dict):
+    # a Payout table lists all winning outcomes with their respective payouts
+    def __init__(self, royal_flush=800, straight_flush=50,
+                 four_of_a_kind=25, full_house=9, flush=6, straight=4,
+                 three_of_a_kind=3, two_pair=2, jacks_or_better=1):
+        # initializes a Payout table given specific payout amounts
+        # returns full pay (9/6) Jacks or Better by default
+        self.table = {"Royal Flush" : royal_flush,
+                      "Straight Flush" : straight_flush,
+                      "Four of a Kind" : four_of_a_kind,
+                      "Full House" : full_house,
+                      "Flush" : flush,
+                      "Straight" : straight,
+                      "Three of a Kind" : three_of_a_kind,
+                      "Two Pair" : two_pair,
+                      "Jacks or Better" : jacks_or_better}
 
-
+"""
 class Game(object):
     # a Game contains specific payout tables and scoring logic for each Hand
-    def __init__(self, royal_straight_flush=800, straight_flush=50,
+    def __init__(self, royal_flush=800, straight_flush=50,
     four_of_a_kind=25, full_house=9, flush=6, straight=4, three_of_a_kind=3,
-    two_pair=2, jacks_or_better=1, coin=0.25, 5_credit_override):
+    two_pair=2, jacks_or_better=1, coin=0.25, five_credit_override):
         # initializes a Game with a given
 
-    def bug(self):
+    def bug(self):"""
