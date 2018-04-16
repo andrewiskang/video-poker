@@ -143,22 +143,36 @@ class Hand(list):
             return "Jacks or Better"
         return None
 
-class Payout(dict):
+class Payout(object):
     # a Payout table lists all winning outcomes with their respective payouts
     def __init__(self, royal_flush=800, straight_flush=50,
                  four_of_a_kind=25, full_house=9, flush=6, straight=4,
                  three_of_a_kind=3, two_pair=2, jacks_or_better=1):
         # initializes a Payout table given specific payout amounts
         # returns full pay (9/6) Jacks or Better by default
-        self.table = {"Royal Flush" : royal_flush,
-                      "Straight Flush" : straight_flush,
-                      "Four of a Kind" : four_of_a_kind,
-                      "Full House" : full_house,
-                      "Flush" : flush,
-                      "Straight" : straight,
-                      "Three of a Kind" : three_of_a_kind,
-                      "Two Pair" : two_pair,
-                      "Jacks or Better" : jacks_or_better}
+        self.table = defaultdict(int)
+        self.table["Royal Flush"] = royal_flush
+        self.table["Straight Flush"] = straight_flush
+        self.table["Four of a Kind"] = four_of_a_kind
+        self.table["Full House"] = full_house
+        self.table["Flush"] = flush
+        self.table["Straight"] = straight
+        self.table["Three of a Kind"] = three_of_a_kind
+        self.table["Two Pair"] = two_pair
+        self.table["Jacks or Better"] = jacks_or_better
+
+    def print_payout(self):
+        # prints out the payouts for each winning outcome
+        print("PAYOUT TABLE:")
+        print("  Royal Flush:         " + str(self.table["Royal Flush"]))
+        print("  Straight Flush:      " + str(self.table["Straight Flush"]))
+        print("  Four of a Kind:      " + str(self.table["Four of a Kind"]))
+        print("  Full House:          " + str(self.table["Full House"]))
+        print("  Flush:               " + str(self.table["Flush"]))
+        print("  Straight:            " + str(self.table["Straight"]))
+        print("  Three of a Kind:     " + str(self.table["Three of a Kind"]))
+        print("  Two Pair:            " + str(self.table["Two Pair"]))
+        print("  Jacks or Better:     " + str(self.table["Jacks or Better"]))
 
 """
 class Game(object):
