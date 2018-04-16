@@ -1,20 +1,27 @@
-from video_poker import Card, Deck, Hand
+from video_poker import Card, Deck, Hand, Payout
 import random
-
-
-def success():
-    # prints success
-    print("  Test passed!")
-def failure():
-    # prints failure
-    print("  Test failed!")
-
-
-
 
 # keep track of all tests
 total = 0
 passed = 0
+
+# success, failure functions that increment total and passed test count
+def success():
+    # prints success
+    print("  Test passed!")
+    global total, passed
+    total += 1
+    passed += 1
+def failure():
+    # prints failure
+    print("  Test failed!")
+    global total
+    total += 1
+
+
+
+
+
 
 # sample Cards
 sample_card_1 = Card(1, "Spades")
@@ -28,38 +35,26 @@ print("CARD TESTS")
 print (sample_card_1.info() + " == " + sample_card_2.info() + ":")
 if sample_card_1 == sample_card_2:
     success()
-    total += 1
-    passed += 1
 else:
     failure()
-    total += 1
 
 print (sample_card_1.info() + " != " + sample_card_3.info() + ":")
 if sample_card_1 != sample_card_3:
     success()
-    total += 1
-    passed += 1
 else:
     failure()
-    total += 1
 
 print (sample_card_1.info() + " != " + sample_card_4.info() + ":")
 if sample_card_1 != sample_card_4:
     success()
-    total += 1
-    passed += 1
 else:
     failure()
-    total += 1
 
 print (sample_card_3.info() + " != " + sample_card_4.info() + ":")
 if sample_card_3 != sample_card_4:
     success()
-    total += 1
-    passed += 1
 else:
     failure()
-    total += 1
 
 # Deck tests
 print("\n\nDECK TESTS")
@@ -73,21 +68,15 @@ for card in new_deck:
 print("Full deck of cards contains 52 cards:")
 if len(new_deck) == 52:
     success()
-    total += 1
-    passed += 1
 else:
     failure()
-    total += 1
 
 print("Empty deck of cards contains 0 cards:")
 empty_deck = Deck()
 if len(empty_deck) == 0:
     success()
-    total += 1
-    passed += 1
 else:
     failure()
-    total += 1
 
 # Hand tests
 print("\n\nHAND TESTS")
@@ -100,11 +89,8 @@ sample_hand_1.print_hand()
 print("After drawing, deck contains 47 cards:")
 if len(sample_deck) == 47:
     success()
-    total += 1
-    passed += 1
 else:
     failure()
-    total += 1
 
 print("\nWe are going to redraw all cards from an empty deck:")
 sample_hand_1 = empty_deck.redraw(sample_hand_1, [])
@@ -113,11 +99,8 @@ sample_hand_1.print_hand()
 print("After redrawing, empty deck continues to contain 0 cards:")
 if len(empty_deck) == 0:
     success()
-    total += 1
-    passed += 1
 else:
     failure()
-    total += 1
 
 print("\nWe are going to redraw the middle card from an empty deck:")
 sample_hand_1 = empty_deck.redraw(sample_hand_1, [0,1,3,4])
@@ -126,11 +109,8 @@ sample_hand_1.print_hand()
 print("After redrawing, empty deck continues to contain 0 cards:")
 if len(empty_deck) == 0:
     success()
-    total += 1
-    passed += 1
 else:
     failure()
-    total += 1
 
 print("\nWe are going to redraw the middle card from the correct deck:")
 sample_hand_1 = sample_deck.redraw(sample_hand_1, [0,1,3,4])
@@ -139,161 +119,106 @@ sample_hand_1.print_hand()
 print("After redrawing, deck continues to contains 47 cards:")
 if len(sample_deck) == 47:
     success()
-    total += 1
-    passed += 1
 else:
     failure()
-    total += 1
 
 # outcome tests
 print("\n\nOUTCOME TESTS")
+
+def outcome_test(hand, expected_outcome):
+    # helper function to compare outcomes of given hands with expected outcome
+    hand_outcome = hand.outcome()
+    print("\nThe following hand is a: " + hand_outcome)
+    print(" "),
+    hand.print_hand()
+    if hand_outcome == expected_outcome:
+        success()
+    else:
+        failure()
 
 # royal flush
 sample_hand_2 = Hand([Card(11, "Diamonds"), Card(1, "Diamonds"),
                       Card(12, "Diamonds"), Card(10, "Diamonds"),
                       Card(13, "Diamonds")])
-sample_hand_2_outcome = sample_hand_2.outcome()
-print("\nThe following hand is a " + sample_hand_2_outcome)
-print(" "),
-sample_hand_2.print_hand()
-if sample_hand_2_outcome == "Royal Flush":
-    success()
-    total += 1
-    passed += 1
-else:
-    failure()
-    total += 1
-
+outcome_test(sample_hand_2, "Royal Flush")
 # straight flush
 sample_hand_3 = Hand([Card(11, "Diamonds"), Card(9, "Diamonds"),
                       Card(12, "Diamonds"), Card(10, "Diamonds"),
                       Card(13, "Diamonds")])
-sample_hand_3_outcome = sample_hand_3.outcome()
-print("\nThe following hand is a " + sample_hand_3_outcome)
-print(" "),
-sample_hand_3.print_hand()
-if sample_hand_3_outcome == "Straight Flush":
-    success()
-    total += 1
-    passed += 1
-else:
-    failure()
-    total += 1
-
+outcome_test(sample_hand_3, "Straight Flush")
 # straight
 sample_hand_4 = Hand([Card(11, "Diamonds"), Card(1, "Diamonds"),
                       Card(12, "Diamonds"), Card(10, "Spades"),
                       Card(13, "Diamonds")])
-sample_hand_4_outcome = sample_hand_4.outcome()
-print("\nThe following hand is a " + sample_hand_4_outcome)
-print(" "),
-sample_hand_4.print_hand()
-if sample_hand_4_outcome == "Straight":
-    success()
-    total += 1
-    passed += 1
-else:
-    failure()
-    total += 1
-
+outcome_test(sample_hand_4, "Straight")
 # flush
 sample_hand_5 = Hand([Card(11, "Hearts"), Card(2, "Hearts"),
                       Card(12, "Hearts"), Card(10, "Hearts"),
                       Card(13, "Hearts")])
-sample_hand_5_outcome = sample_hand_5.outcome()
-print("\nThe following hand is a " + sample_hand_5_outcome)
-print(" "),
-sample_hand_5.print_hand()
-if sample_hand_5_outcome == "Flush":
-    success()
-    total += 1
-    passed += 1
-else:
-    failure()
-    total += 1
-
+outcome_test(sample_hand_5, "Flush")
 # four of a kind
 sample_hand_6 = Hand([Card(11, "Hearts"), Card(11, "Diamonds"),
                       Card(11, "Spades"), Card(11, "Clubs"),
                       Card(13, "Hearts")])
-sample_hand_6_outcome = sample_hand_6.outcome()
-print("\nThe following hand is a " + sample_hand_6_outcome)
-print(" "),
-sample_hand_6.print_hand()
-if sample_hand_6_outcome == "Four of a Kind":
-    success()
-    total += 1
-    passed += 1
-else:
-    failure()
-    total += 1
-
+outcome_test(sample_hand_6, "Four of a Kind")
 # full house
 sample_hand_7 = Hand([Card(11, "Diamonds"), Card(1, "Diamonds"),
                       Card(11, "Spades"), Card(11, "Hearts"),
                       Card(1, "Clubs")])
-sample_hand_7_outcome = sample_hand_7.outcome()
-print("\nThe following hand is a " + sample_hand_7_outcome)
-print(" "),
-sample_hand_7.print_hand()
-if sample_hand_7_outcome == "Full House":
-    success()
-    total += 1
-    passed += 1
-else:
-    failure()
-    total += 1
-
+outcome_test(sample_hand_7, "Full House")
 # three of a kind
 sample_hand_8 = Hand([Card(11, "Diamonds"), Card(4, "Diamonds"),
                       Card(11, "Spades"), Card(11, "Hearts"),
                       Card(1, "Clubs")])
-sample_hand_8_outcome = sample_hand_8.outcome()
-print("\nThe following hand is a " + sample_hand_8_outcome)
-print(" "),
-sample_hand_8.print_hand()
-if sample_hand_8_outcome == "Three of a Kind":
-    success()
-    total += 1
-    passed += 1
-else:
-    failure()
-    total += 1
-
+outcome_test(sample_hand_8, "Three of a Kind")
 # two pair
 sample_hand_9 = Hand([Card(11, "Diamonds"), Card(4, "Diamonds"),
                       Card(11, "Spades"), Card(4, "Hearts"),
                       Card(1, "Clubs")])
-sample_hand_9_outcome = sample_hand_9.outcome()
-print("\nThe following hand is a " + sample_hand_9_outcome)
-print(" "),
-sample_hand_9.print_hand()
-if sample_hand_9_outcome == "Two Pair":
-    success()
-    total += 1
-    passed += 1
-else:
-    failure()
-    total += 1
-
+outcome_test(sample_hand_9, "Two Pair")
 # jacks or better
 sample_hand_10 = Hand([Card(11, "Diamonds"), Card(4, "Diamonds"),
                        Card(11, "Spades"), Card(12, "Hearts"),
                        Card(1, "Clubs")])
-sample_hand_10_outcome = sample_hand_10.outcome()
-print("\nThe following hand is a " + sample_hand_10_outcome)
-print(" "),
-sample_hand_10.print_hand()
-if sample_hand_10_outcome == "Jacks or Better":
-    success()
-    total += 1
-    passed += 1
-else:
-    failure()
-    total += 1
+outcome_test(sample_hand_10, "Jacks or Better")
 
 # Payout Tests
 print("\n\nPAYOUT TESTS")
+
+def payout_test(payout, outcome, expected_amount):
+    # helper function to compare payouts of outcomes with expected payout amount
+    payout_amount = payout.table[outcome]
+    print(outcome + " payout is: " + str(payout_amount))
+    if payout_amount == expected_amount:
+        success()
+    else:
+        failure()
+
+print("\nDefault (9/6) payout table, should be 800-50-25-9-6-4-3-2-1")
+sample_payout_1 = Payout()
+sample_payout_1.print_payout()
+payout_test(sample_payout_1, "Royal Flush", 800)
+payout_test(sample_payout_1, "Straight Flush", 50)
+payout_test(sample_payout_1, "Four of a Kind", 25)
+payout_test(sample_payout_1, "Full House", 9)
+payout_test(sample_payout_1, "Flush", 6)
+payout_test(sample_payout_1, "Straight", 4)
+payout_test(sample_payout_1, "Three of a Kind", 3)
+payout_test(sample_payout_1, "Two Pair", 2)
+payout_test(sample_payout_1, "Jacks or Better", 1)
+
+print("\nCustom (8/5) payout table, should be 800-50-25-8-5-4-3-2-1")
+sample_payout_1 = Payout(full_house=8, flush=5)
+sample_payout_1.print_payout()
+payout_test(sample_payout_1, "Royal Flush", 800)
+payout_test(sample_payout_1, "Straight Flush", 50)
+payout_test(sample_payout_1, "Four of a Kind", 25)
+payout_test(sample_payout_1, "Full House", 8)
+payout_test(sample_payout_1, "Flush", 5)
+payout_test(sample_payout_1, "Straight", 4)
+payout_test(sample_payout_1, "Three of a Kind", 3)
+payout_test(sample_payout_1, "Two Pair", 2)
+payout_test(sample_payout_1, "Jacks or Better", 1)
 
 print("\nTotal Tests: " + str(total))
 print("Passed Tests: " + str(passed))
