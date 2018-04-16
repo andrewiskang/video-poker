@@ -32,10 +32,6 @@ class Card(object):
 
 class Deck(set):
     # a Deck contains cards that can be drawn into or pulled out of a Hand
-    def random_draw(self):
-        # draw one Card from Deck at random
-        return random.sample(self, 1)[0]
-
     def draw_hand(self):
         # given a deck, draws a Hand of 5 Cards
         hand = Hand()
@@ -47,15 +43,16 @@ class Deck(set):
 
     def redraw(self, hand, indices):
         # redraws Cards based on selected indices within the given Hand
-        # return all selected Cards back to the Deck before Cards are redrawn
-        for i in indices:
+        # return Cards back to the Deck before Cards are redrawn
+        remove_indices = list({0,1,2,3,4} - set(indices))
+        for i in remove_indices:
             self.add(hand[i])
 
-        # if Card index was selected, redraw Card and remove from the Deck
-        # if Card index was not selected, keep same Card in Hand
+        # if Card index was selected, keep Card in Hand
+        # if Card index was not selected, redraw a Card from the Deck
         new_hand = Hand()
         for i in range(5):
-            if i in indices:
+            if i in remove_indices:
                 new_card = random.sample(self, 1)[0]
                 new_hand.append(new_card)
                 self.remove(new_card)

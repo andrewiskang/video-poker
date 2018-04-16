@@ -62,7 +62,7 @@ else:
     total += 1
 
 # Deck tests
-print("\nDECK TESTS")
+print("\n\nDECK TESTS")
 
 print("Full deck of cards contains the following:")
 new_deck = Deck.full_deck()
@@ -90,11 +90,11 @@ else:
     total += 1
 
 # Hand tests
-print("\nHAND TESTS")
+print("\n\nHAND TESTS")
 
 sample_deck = Deck.full_deck()
 sample_hand_1 = sample_deck.draw_hand()
-print("Sample Hand:")
+print("\nSample Hand:")
 print(" "),
 sample_hand_1.print_hand()
 print("After drawing, deck contains 47 cards:")
@@ -107,7 +107,7 @@ else:
     total += 1
 
 print("\nWe are going to redraw all cards from an empty deck:")
-sample_hand_1 = empty_deck.redraw(sample_hand_1, [0, 1, 2, 3, 4])
+sample_hand_1 = empty_deck.redraw(sample_hand_1, [])
 print(" "),
 sample_hand_1.print_hand()
 print("After redrawing, empty deck continues to contain 0 cards:")
@@ -120,7 +120,7 @@ else:
     total += 1
 
 print("\nWe are going to redraw the middle card from an empty deck:")
-sample_hand_1 = empty_deck.redraw(sample_hand_1, [2])
+sample_hand_1 = empty_deck.redraw(sample_hand_1, [0,1,3,4])
 print(" "),
 sample_hand_1.print_hand()
 print("After redrawing, empty deck continues to contain 0 cards:")
@@ -133,7 +133,7 @@ else:
     total += 1
 
 print("\nWe are going to redraw the middle card from the correct deck:")
-sample_hand_1 = sample_deck.redraw(sample_hand_1, [2])
+sample_hand_1 = sample_deck.redraw(sample_hand_1, [0,1,3,4])
 print(" "),
 sample_hand_1.print_hand()
 print("After redrawing, deck continues to contains 47 cards:")
@@ -146,7 +146,7 @@ else:
     total += 1
 
 # outcome tests
-print("\nOUTCOME TESTS")
+print("\n\nOUTCOME TESTS")
 
 # royal flush
 sample_hand_2 = Hand([Card(11, "Diamonds"), Card(1, "Diamonds"),
@@ -293,7 +293,7 @@ else:
     total += 1
 
 # Payout Tests
-print("\nPAYOUT TESTS")
+print("\n\nPAYOUT TESTS")
 
 print("\nTotal Tests: " + str(total))
 print("Passed Tests: " + str(passed))
