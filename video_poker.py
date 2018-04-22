@@ -1,96 +1,124 @@
 import random
 from collections import defaultdict
 
+RANKS = {1:"A",
+         2:"2",
+         3:"3",
+         4:"4",
+         5:"5",
+         6:"6",
+         7:"7",
+         8:"8",
+         9:"9",
+         10:"10",
+         11:"J",
+         12:"Q",
+         13:"K"}
+SUITS = {"S": "Spades",
+         "H": "Hearts",
+         "C": "Clubs",
+         "D": "Diamonds"}
+
 
 class Card(object):
     # a Card has two characteristics: a rank (number) and a suit
-    def __init__(self, rank_value, suit):
+    def __init__(self, card_string):
         # initializes a Card with specified rank value and suit
-        self.rank_value = rank_value
-        ranks = {1:"A", 2:"2", 3:"3", 4:"4", 5:"5", 6:"6", 7:"7", 8:"8",
-        9:"9", 10:"10", 11:"J", 12:"Q", 13:"K"}
-        self.rank = ranks[rank_value]
-        self.suit = suit
+        self.string = card_string
+        self.rank = RANKS[rank_value(card_string)]
+        self.suit = SUITS[suit_initial(card_string)]
 
     def __eq__(self, other):
         # overrides == function for comparison purposes
         if isinstance(self,other.__class__):
-            return (self.rank_value == other.rank_value) and (self.suit == other.suit)
+            return (self.rank_value == other.rank_value) and \
+                   (self.suit_initial == other.suit_initial)
         return False
 
     def __ne__(self, other):
         # overrides != function for comparison purposes
         return not self.__eq__(other)
 
-    def info(self):
-        # returns card info as a string in the form "<rank> of <suit>"
+    def full_name(self):
+        # returns Card name as a string in the form "<rank> of <suit>"
         return self.rank + " of " + self.suit
 
-    def print_card(self):
-        # prints out card info
-        print(self.info())
-
-class Deck(set):
-    # a Deck contains cards that can be drawn into or pulled out of a Hand
-    def draw_hand(self):
-        # given a deck, draws a Hand of 5 Cards
-        hand = Hand()
-        new_cards = random.sample(self, 5)
-        for i in range(5):
-            hand.append(new_cards[i])
-            self.remove(new_cards[i])
-        return hand
-
-    def redraw(self, hand, indices):
-        # redraws Cards based on selected indices within the given Hand
-        # return Cards back to the Deck before Cards are redrawn
-        remove_indices = list({0,1,2,3,4} - set(indices))
-        for i in remove_indices:
-            self.add(hand[i])
-
-        # if Card index was selected, keep Card in Hand
-        # if Card index was not selected, redraw a Card from the Deck
-        new_hand = Hand()
-        for i in range(5):
-            if i in remove_indices:
-                new_card = random.sample(self, 1)[0]
-                new_hand.append(new_card)
-                self.remove(new_card)
-            else:
-                new_hand.append(hand[i])
-
-        return new_hand
+    def print_name(self):
+        # prints out full card name
+        print(self.full_name())
 
     @staticmethod
-    def full_deck():
+    def rank_value(card_string):
+        # given a rank-suit string, return the rank value of the given string (int)
+        return int(card_string[:-1])
+    @staticmethod
+    def suit_initial(card_string):
+        # given a rank-suit string, return the suit of the given string (string)
+        return (card_string[-1])
+
+
+class Deck(list):
+    # a Deck contains card strings to be drawn into or pulled out of a hand
+    def new_hand(self):
+        # given a Deck, shuffles and draws 5 cards from the top of the Deck
+        random.shuffle(self)
+        new_cards = self[:5]
+        del self[:5]
+        return new_cards
+
+    def draw_cards(self, hand=[], hold_indices=[]):
+        # redraws cards not in hold_indices parameter within the given Hand
+        # to draw a new hand, no parameters are necessary
+        if hand == []:
+            return self.new_hand()
+
+        # return cards back to the Deck and shuffle before cards are redrawn
+        remove_indices = list({0,1,2,3,4} - set(hold_indices))
+        for i in remove_indices:
+            self.append(hand[i])
+        random.shuffle(self)
+
+        # for cards to be removed, draw and remove a card from the Deck
+        for i in remove_indices:
+            hand[i] = self[0]
+            del self[:1]
+        return hand
+
+    @staticmethod
+    def new_deck():
     # returns a Deck of 52 cards: 13 ranks of 4 suits each
         deck = Deck()
-        rank_values = range(1, 14)
-        suits = {"Spades", "Hearts", "Clubs", "Diamonds"}
+        rank_values = RANKS.keys()
+        suit_initials = SUITS.keys()
         for rank_value in rank_values:
-            for suit in suits:
-                deck.add(Card(rank_value, suit))
+            for suit_initial in suit_initials:
+                deck.append(str(rank_value) + suit_initial)
         return deck
 
+
 class Hand(list):
-    # a Hand contains 5 Cards from a Deck of 52 Cards, with no duplicates
+    # a Hand contains 5 card strings from a deck of 52 cards
     def print_hand(self):
         # prints out a visual representation of the Cards in the given Hand
         card_info = []
-        for card in self:
-            card_info.append(card.info())
+        for card_string in self:
+            card = Card(card_string)
+            card_info.append(card.full_name())
         print("    ".join(card_info))
 
     def outcome(self):
         # returns the winning outcome of a Hand, and None if losing Hand
+        # if Hand is empty, return None
+        if self == []:
+            return None
 
         # store a tally of ranks and suits in two separate Dictionaries
         rank_tally = defaultdict(int)
-        for card in self:
-            rank_tally[card.rank_value] += 1
         suit_tally = defaultdict(int)
-        for card in self:
-            suit_tally[card.suit] += 1
+        for card_string in self:
+            rank_tally[Card.rank_value(card_string)] += 1
+        for card_string in self:
+            suit_tally[Card.suit_initial(card_string)] += 1
 
         # store max frequency of ranks and suits for evaluation purposes
         max_rank_value = max(rank_tally, key=rank_tally.get)
@@ -143,43 +171,47 @@ class Hand(list):
             return "Jacks or Better"
         return None
 
-class Payout(object):
+class Payout(dict):
     # a Payout table lists all winning outcomes with their respective payouts
-    def __init__(self, royal_flush=800, straight_flush=50,
-                 four_of_a_kind=25, full_house=9, flush=6, straight=4,
-                 three_of_a_kind=3, two_pair=2, jacks_or_better=1):
-        # initializes a Payout table given specific payout amounts
-        # returns full pay (9/6) Jacks or Better by default
-        self.table = defaultdict(int)
-        self.table["Royal Flush"] = royal_flush
-        self.table["Straight Flush"] = straight_flush
-        self.table["Four of a Kind"] = four_of_a_kind
-        self.table["Full House"] = full_house
-        self.table["Flush"] = flush
-        self.table["Straight"] = straight
-        self.table["Three of a Kind"] = three_of_a_kind
-        self.table["Two Pair"] = two_pair
-        self.table["Jacks or Better"] = jacks_or_better
+    def __missing__(self, key):
+        # defaults all missing key values to 0
+        return 0
 
     def print_payout(self):
         # prints out the payouts for each winning outcome
         print("PAYOUT TABLE:")
-        print("  Royal Flush:         " + str(self.table["Royal Flush"]))
-        print("  Straight Flush:      " + str(self.table["Straight Flush"]))
-        print("  Four of a Kind:      " + str(self.table["Four of a Kind"]))
-        print("  Full House:          " + str(self.table["Full House"]))
-        print("  Flush:               " + str(self.table["Flush"]))
-        print("  Straight:            " + str(self.table["Straight"]))
-        print("  Three of a Kind:     " + str(self.table["Three of a Kind"]))
-        print("  Two Pair:            " + str(self.table["Two Pair"]))
-        print("  Jacks or Better:     " + str(self.table["Jacks or Better"]))
+        print("  Royal Flush:         " + str(self["Royal Flush"]))
+        print("  Straight Flush:      " + str(self["Straight Flush"]))
+        print("  Four of a Kind:      " + str(self["Four of a Kind"]))
+        print("  Full House:          " + str(self["Full House"]))
+        print("  Flush:               " + str(self["Flush"]))
+        print("  Straight:            " + str(self["Straight"]))
+        print("  Three of a Kind:     " + str(self["Three of a Kind"]))
+        print("  Two Pair:            " + str(self["Two Pair"]))
+        print("  Jacks or Better:     " + str(self["Jacks or Better"]))
 
-"""
+    @staticmethod
+    def default():
+        payout = Payout()
+        payout.update({"Royal Flush": 800,
+                       "Straight Flush": 50,
+                       "Four of a Kind": 25,
+                       "Full House": 9,
+                       "Flush": 6,
+                       "Straight": 4,
+                       "Three of a Kind": 3,
+                       "Two Pair": 2,
+                       "Jacks or Better": 1})
+        return payout
+
 class Game(object):
     # a Game contains specific payout tables and scoring logic for each Hand
-    def __init__(self, royal_flush=800, straight_flush=50,
-    four_of_a_kind=25, full_house=9, flush=6, straight=4, three_of_a_kind=3,
-    two_pair=2, jacks_or_better=1, coin=0.25, five_credit_override):
-        # initializes a Game with a given
-
-    def bug(self):"""
+    def __init__(self, deck=Deck.new_deck(), hand=[], bankroll=1000,
+                 num_credits=5, payout=Payout()):
+        # initializes a Game that holds the following information:
+        # deck, current hand, bankroll, # credits being played, payout table
+        self.deck = deck
+        self.hand = hand
+        self.bankroll = bankroll
+        self.num_credits = num_credits
+        self.payout = payout
