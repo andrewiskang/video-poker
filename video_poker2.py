@@ -31,7 +31,7 @@ class Card(object):
     def __eq__(self, other):
         # overrides == function for comparison purposes
         if isinstance(self,other.__class__):
-            return (self.rank_value == other.rank_value) and
+            return (self.rank_value == other.rank_value) and \
                    (self.suit_initial == other.suit_initial)
         return False
 

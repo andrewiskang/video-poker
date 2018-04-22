@@ -1,13 +1,21 @@
 #!flask/bin/python
 from flask import Flask, make_response, abort, jsonify
-from video_poker import Card, Deck, Hand, Payout, Game
+from video_poker2 import Card, Deck, Hand, Payout
 
 app = Flask(__name__)
 
 games = [{"id": 0,
           "deck": [],
           "hand": [],
-          "payout": {},
+          "payout": {"Royal Flush": 800,
+                     "Straight Flush": 50,
+                     "Four of a Kind": 25,
+                     "Full House": 9,
+                     "Flush": 6,
+                     "Straight": 4,
+                     "Three of a Kind": 3,
+                     "Two Pair": 2,
+                     "Jacks or Better": 1},
           "bankroll": 0,
           "num_credits": 5,
           "denomination": .25,
@@ -57,7 +65,7 @@ def delete_game(game_id):
     games.remove(game[0])
     return jsonify({"success": True}), 204
 
-@approute("/api/v1.0/games/<int:game_id>/play)", methods=["PUT"])
+@app.route("/api/v1.0/games/<int:game_id>/play)", methods=["PUT"])
 def play(game_id):
     # deals a new hand or redraws certain cards based on has_redrawn
     game = [game for game in games if game["id"] == game_id]
