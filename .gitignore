@@ -1,2 +1,4 @@
 *.pyc
 flask/
+serviceAccountKey.json
+env/
