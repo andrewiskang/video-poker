@@ -20,16 +20,15 @@ def index():
 @app.route('/api/games', methods=['POST'])
 def createGame():
     game = {
-        'deck': Deck(),
-        'hand': [],
-        'payout': Payout(request.json.get('payout')),
+        'hand': request.json.get('hand', []),
+        'payout': request.json.get('payout', Payout()),
         'bankroll': request.json.get('bankroll', 1000),
-        'denomination': request.json.get('denomination', 1),
-        'hasRedrawn': false
+        'denomination': request.json.get('denomination', 1)
     }
     print(game)
-    db.collection('games').add(game)
-    return jsonify({'game': game}), 201
+    gameRef = db.collection('games').document()
+    gameRef.set(game)
+    return jsonify({'id': gameRef.id, 'game': game}), 201
 
 # @app.route('/api/games', methods=['GET'])
 # def getGames():
