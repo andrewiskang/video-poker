@@ -76,11 +76,18 @@ class Deck(list):
             return self.newHand()
 
         # shuffle deck and draw cards
-        drawIndices = list({0,1,2,3,4} - set(holdIndices))
         random.shuffle(self)
-        for i in drawIndices:
-            hand[i] = self[i]
-        return hand
+        newHand = []
+        newCardIndex = 0
+        for i in range(5):
+            if i in holdIndices:
+                newHand.append(hand[i])
+            else:
+                newCard = self[newCardIndex]
+                while newCard in hand or newCard in newHand:
+                    newCardIndex += 1
+                newHand.append(newCard)
+        return newHand
 
 
 class Hand(list):
