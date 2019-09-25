@@ -25,31 +25,33 @@ def createGame():
         'bankroll': request.json.get('bankroll', 1000),
         'denomination': request.json.get('denomination', 1)
     }
-    print(game)
     gameRef = db.collection('games').document()
-    gameRef.set(game)
-    return jsonify({'id': gameRef.id, 'game': game}), 201
+    return jsonify({
+        'id': gameRef.id,
+        'update_time': gameRef.set(game).update_time.seconds,
+        'game': game
+    }), 201
+
+@app.route('/api/games/<string:gameId>', methods=['GET'])
+def getGame(gameId):
+    gameRef = db.document('games/'+gameId)
+    return jsonify({
+        'game' : gameRef.get().to_dict()
+    })
+
+@app.route('/api/games/<string:gameId>', methods=['DELETE'])
+def deleteGame(gameId):
+    gameRef = db.document('games/'+gameId)
+    return jsonify({
+        'time_deleted': gameRef.delete().seconds
+    })
 
 # @app.route('/api/games', methods=['GET'])
 # def getGames():
 #     return jsonify({'games' : games})
 
-# @app.route('/api/games/<int:gameId>', methods=['GET'])
-# def getGame(gameId):
-#     game = [game for game in games if game['id'] == gameId]
-#     if len(game) == 0:
-#         abort(404)
-#     return jsonify({'game' : game[0]})
 
-# @app.route('/api/games/<int:gameId>', methods=['DELETE'])
-# def deleteGame(gameId):
-#     game = [game for game in games if game['id'] == gameId]
-#     if len(game) == 0:
-#         abort(404)
-#     games.remove(game[0])
-#     return jsonify({'success': True}), 204
-
-# @app.route('/api/games/<int:gameId>', methods=['GET'])
+# @app.route('/api/games/<string:gameId>', methods=['GET'])
 # def getGame(gameId):
 #     game = [game for game in games if game['id'] == gameId]
 #     if len(game) == 0:
@@ -59,7 +61,7 @@ def createGame():
 #     return jsonify({'hand': hand,
 #                     'outcome': outcome})
 
-# @app.route('/api/games/<int:gameId>/draw', methods=['GET'])
+# @app.route('/api/games/<string:gameId>/draw', methods=['GET'])
 # def draw(gameId):
 #     # deals a new hand or redraws certain cards based on has_redrawn
 #     game = [game for game in games if game['id'] == gameId]
@@ -110,7 +112,7 @@ def createGame():
 #                     'has_redrawn': game[0]['has_redrawn'],
 #                     'bankroll': game[0]['bankroll']}), 200
 
-# @app.route('/api/games/<int:gameId>/draw', methods=['GET'])
+# @app.route('/api/games/<string:gameId>/draw', methods=['GET'])
 # def draw_or_redraw(gameId):
 #     # deals a new hand or redraws certain cards based on has_redrawn
 #     game = [game for game in games if game['id'] == gameId]
