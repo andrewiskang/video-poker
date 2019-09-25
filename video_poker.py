@@ -69,7 +69,7 @@ class Deck(list):
         newCards = self[:5]
         return newCards
 
-    def drawCards(self, hand=[], holdIndices=[]):
+    def drawCards(self, hand, holdIndices):
         # redraws cards not in holdIndices parameter within the given Hand
         # to draw a new hand, no parameters are necessary
         if not hand:
