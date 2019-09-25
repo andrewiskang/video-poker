@@ -114,26 +114,24 @@ class Hand(list):
         for cardString in self:
             suitTally[Card.suitInitial(cardString)] += 1
 
-        # store max frequency of ranks and suits for evaluation purposes
+        ## store max frequency of ranks and suits for evaluation purposes
+        # also store ranks and rank frequency
         maxRankValue = max(rankTally, key=rankTally.get)
         maxRankTally = rankTally[maxRankValue]
         maxSuit = max(suitTally, key=suitTally.get)
         maxSuitTally = suitTally[maxSuit]
-        # also store ranks and rank frequency
         ranks = sorted(rankTally.keys())
         rankTallies = sorted(rankTally.values())
 
-        # initial bools to help determine outcome
-
+        ## initial bools to help determine outcome
         # a flush is 5 of the same suit
         isFlush = (maxSuitTally == 5)
-        # a straight is 5 consecutive ranks or a Royal (10, J, Q, K, A)
+        # a straight is 5 consecutive ranks or 10-J-Q-K-A
         lowestRank = ranks[0]
         isStraight = (ranks == range(lowestRank, lowestRank+5) or
                        ranks == [1, 10, 11, 12, 13])
 
-        # logic progression to determine winning outcome of given Hand
-
+        ## logic progression to determine winning outcome of given Hand
         # a straight flush is both a straight and a flush
         if isFlush and isStraight:
             # a royal flush is 10, J, Q, K, A, all with the same suit
@@ -150,7 +148,7 @@ class Hand(list):
         # a flush is 5 of the same suit
         if isFlush:
             return 'Flush'
-        # a straight is 5 consecutive ranks or a Royal (10, J, Q, K, A)
+        # a straight is 5 consecutive ranks or 10-J-Q-K-A
         if isStraight:
             return 'Straight'
         # a three of a kind is 3 of the same rank (max rank tally = 3)
