@@ -166,7 +166,7 @@ class Payout(dict):
         return 0
 
     # default paytable if values are not provided
-    def __init__(self, payout):
+    def __init__(self, payout={}):
         self['Royal Flush'] = payout.get('Royal Flush', 800)
         self['Straight Flush'] = payout.get('Straight Flush', 50)
         self['Four of a Kind'] = payout.get('Four of a Kind', 25)
