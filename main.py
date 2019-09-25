@@ -18,6 +18,16 @@ app = Flask(__name__)
 def index():
     return 'Video Poker!'
 
+@app.route('/api/games', methods=['GET'])
+def getGames():
+    games = []
+    gamesRef = db.collection('games').list_documents()
+    for gameRef in gamesRef:
+        game = gameRef.get().to_dict()
+        game['id'] = gameRef.id
+        games.append(game)
+    return jsonify(games)
+
 @app.route('/api/games', methods=['POST'])
 def createGame():
     game = {
