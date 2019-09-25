@@ -61,7 +61,7 @@ class Deck(list):
     # a Deck contains card strings to be drawn into or pulled out of a hand
     def __init__(self):
         # returns a Deck of 52 cards: 13 ranks of 4 suits each
-        self = [str(rankValue) + suitInitial for rankValue in RANKS.keys() for suitInitial in SUITS.keys()]
+        super(Deck, self).__init__([str(rankValue) + suitInitial for rankValue in RANKS.keys() for suitInitial in SUITS.keys()])
 
     def newHand(self):
         # given a Deck, shuffles and draws 5 cards from the top of the Deck
