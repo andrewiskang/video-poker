@@ -1,9 +1,12 @@
 runtime: python37
 api_version: 1
-threadsafe: true
 
 handlers:
-- url: /static
-  static_dir: static
-- url: /.*
+- url: /api/*
   script: main.app
+- url: /
+  static_files: frontend/dist/index.html
+  upload: frontend/dist/index.html
+- url: /
+  static_dir: frontend/dist
+
