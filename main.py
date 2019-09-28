@@ -1,5 +1,6 @@
 #!flask/bin/python
 from flask import Flask, make_response, abort, jsonify, request
+from flask_cors import CORS
 
 import firebase_admin
 from firebase_admin import credentials
@@ -13,6 +14,7 @@ from video_poker import Card, Deck, Hand, Payout
 deck = Deck()
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/')
 def index():
