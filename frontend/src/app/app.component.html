@@ -5,9 +5,9 @@
   <h1>Video Poker</h1>
 </mat-toolbar>
 <!-- <md-card class="card md-whiteframe-3dp" ng-class="{\'md-whiteframe-15dp\' : vm.hoverCard}" *ngIf="vm.card !=null && !vm.card.hideValue" ng-mouseenter=vm.toggleHover() ng-mouseleave=vm.toggleHover() ng-click=vm.toggleBackside()> -->
-<div flexLayout="row" fxLayout.xs="column" fxLayoutAlign="center" fxLayoutGap="0.5rem">
-  <mat-card class="card" *ngFor="let card of hand" fxFlex="20%">
-    <div class="card-{{ card.rank.name }}" style="color:{{ card.suit.color }}">
+<div flexLayout="row wrap" fxLayout.xs="column" fxLayoutAlign="center" fxLayoutGap="0.5rem">
+  <mat-card class="card" *ngFor="let card of hand" fxFlex="20%" (click)="card.held = !card.held">
+    <div class="card-{{ card.rank.name }}" [style.color]="card.suit.color">
       <div class="corner top">
         <span class=number>{{ card.rank.symbol }}</span>
         <span>{{ card.suit.symbol }}</span>
@@ -39,7 +39,13 @@
       </div>
     </div>
   </mat-card>
-
 </div>
-  
+<div flexLayout="row" fxLayout.xs="column" fxLayoutAlign="center">
+  <div *ngFor="let card of hand" fxFlex="20%" fxLayoutAlign="center">
+    <span *ngIf="card.held">HOLD</span>
+  </div>
+</div>
+<div flexLayout="row" fxLayout.xs="column" fxLayoutAlign="center">
+  <button mat-button (click)="drawCards()">DRAW</button>
+</div>
 <!-- </md-card> -->

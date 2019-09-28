@@ -80,10 +80,10 @@ suitem(value)
 
 .card .face img {
   position: absolute;
-  left: 2.56em;
+  left: 1.56em;
   top: 2.08em;
-  width: 10.8em;
-  height: 18.24em;
+  width: 7.8em;
+  height: 11.24em;
 }
 
 .card .suit {

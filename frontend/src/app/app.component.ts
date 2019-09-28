@@ -1,91 +1,47 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { GameService } from './services/game.service'
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
-  hand: any[] = [
-      {
-          rank: {
-              name: 'seven',
-              symbol: '7',
-              value: 7
-          },
-          suit: {
-              name: 'heart',
-              symbol: '♥',
-              color: 'red'
-          }
-      },
-      {
-          rank: {
-              name: 'three',
-              symbol: '3',
-              value: 3
-          },
-          suit: {
-              name: 'heart',
-              symbol: '♥',
-              color: 'red'
-          }
-      },
-      {
-          rank: {
-              name: 'ace',
-              symbol: 'A',
-              value: 1
-          },
-          suit: {
-              name: 'heart',
-              symbol: '♥',
-              color: 'red'
-          }
-      },
-      {
-          rank: {
-              name: 'king',
-              symbol: 'K',
-              value: 13
-          },
-          suit: {
-              name: 'heart',
-              symbol: '♥',
-              color: 'red'
-          }
-      },
-      {
-          rank: {
-              name: 'ten',
-              symbol: '10',
-              value: 10
-          },
-          suit: {
-              name: 'heart',
-              symbol: '♥',
-              color: 'red'
-          }
-      }
-  ]
+export class AppComponent implements OnInit {
+
+  hand: any[]
+  denomination: number = 1
+  numCredits: number = 5
+  gameId: string = 'LXgAEAK2IbTUP59KtBuR'
+  bankroll: number
+  outcome: string
+  payout: any
+  creditsWon: number
+
+  constructor(private gameService: GameService) {}
+
+  ngOnInit() {
+
+  }
+
+  drawCards() {
+    var payload = {
+      denomination: this.denomination,
+      numCredits: this.numCredits
+    }
+    this.gameService.drawCards(this.gameId, payload).subscribe(data => {
+      data.hand.forEach(card => {
+        card.held = false
+      })
+      this.hand = data.hand
+      this.bankroll = data.bankroll
+      this.outcome = data.outcome
+    })
+  }
+
+  // redrawCards() {
+  //   var payload = {
+  //     holdIndices: 
+  //   }
+  // }
 }
 
-      //         symbol: '♣',
-      //     color: 'black'
-      //   },
-      //   diamond: {
-      //     name: 'diamond',
-      //     symbol: '♦',
-      //     color: 'red'
-      //   },
-      //   spade: {
-      //     name: 'spade',
-      //     symbol: '♠',
-      //     color: 'black'
-      //   },
-      //   heart: {
-      //     name: 'heart',
-      //     symbol: '♥',
-      //     color: 'red'
-      //   }
-      // };
