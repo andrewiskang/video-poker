@@ -16,8 +16,10 @@ export class AppComponent implements OnInit {
   outcome: string
   payout: any
   creditsWon: number
+  inPlay: boolean = false
+  holdIndices = [false, false, false, false, false]
 
-  constructor(private gameService: GameService) {}
+  constructor(private gameService: GameService) { }
 
   ngOnInit() {
 
@@ -29,12 +31,23 @@ export class AppComponent implements OnInit {
       numCredits: this.numCredits
     }
     this.gameService.drawCards(this.gameId, payload).subscribe(data => {
-      data.hand.forEach(card => {
-        card.held = false
-      })
       this.hand = data.hand
       this.bankroll = data.bankroll
       this.outcome = data.outcome
+      this.creditsWon = 0
+      this.inPlay = true
+      this.holdIndices = [false, false, false, false, false]
+    })
+  }
+
+  redrawCards() {
+    var payload = { holdIndices: this.holdIndices }
+    this.gameService.redrawCards(this.gameId, payload).subscribe(data => {
+      this.hand = data.hand
+      this.bankroll = data.bankroll
+      this.outcome = data.outcome
+      this.creditsWon = data.creditsWon
+      this.inPlay = false
     })
   }
 

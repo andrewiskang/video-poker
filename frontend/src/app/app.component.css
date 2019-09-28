@@ -190,3 +190,8 @@ suitem(value)
   right: .41em;
   transform: rotate(180deg));
 }
+
+.outcome {
+  font-size: 14px;
+  min-height: 1em;
+}

@@ -5,8 +5,11 @@
   <h1>Video Poker</h1>
 </mat-toolbar>
 <!-- <md-card class="card md-whiteframe-3dp" ng-class="{\'md-whiteframe-15dp\' : vm.hoverCard}" *ngIf="vm.card !=null && !vm.card.hideValue" ng-mouseenter=vm.toggleHover() ng-mouseleave=vm.toggleHover() ng-click=vm.toggleBackside()> -->
+<div flexLayout="row" fxLayout.xs="column" fxLayoutAlign="center">
+  <span class="outcome">{{ outcome }}</span>
+</div>
 <div flexLayout="row wrap" fxLayout.xs="column" fxLayoutAlign="center" fxLayoutGap="0.5rem">
-  <mat-card class="card" *ngFor="let card of hand" fxFlex="20%" (click)="card.held = !card.held">
+  <mat-card class="card" *ngFor="let card of hand; let i=index" fxFlex="20%" (click)="holdIndices[i] = inPlay ? !holdIndices[i] : holdIndices[i]">
     <div class="card-{{ card.rank.name }}" [style.color]="card.suit.color">
       <div class="corner top">
         <span class=number>{{ card.rank.symbol }}</span>
@@ -41,11 +44,16 @@
   </mat-card>
 </div>
 <div flexLayout="row" fxLayout.xs="column" fxLayoutAlign="center">
-  <div *ngFor="let card of hand" fxFlex="20%" fxLayoutAlign="center">
-    <span *ngIf="card.held">HOLD</span>
+  <div *ngFor="let hold of holdIndices" fxFlex="20%" fxLayoutAlign="center">
+    <span [ngStyle]="{'visibility': hold ? 'visible' : 'hidden'}">HOLD</span>
   </div>
 </div>
+<div flexLayout="row" fxLayout.xs="column" fxLayoutAlign="space-between">
+  <span [ngStyle]="{'visibility': creditsWon ? 'visible' : 'hidden'}">{{ 'WIN ' + creditsWon }}</span>
+  <span>{{ 'CREDIT ' + bankroll }}</span>
+</div>
 <div flexLayout="row" fxLayout.xs="column" fxLayoutAlign="center">
-  <button mat-button (click)="drawCards()">DRAW</button>
+  <button *ngIf="!inPlay" mat-button (click)="drawCards()">DRAW</button>
+  <button *ngIf="inPlay" mat-button (click)="redrawCards()">REDRAW</button>
 </div>
 <!-- </md-card> -->
