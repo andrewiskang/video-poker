@@ -140,7 +140,7 @@ class Deck(list):
     def drawCards(self, hand, holdIndices):
         # redraws cards not in holdIndices parameter within the given Hand
         # to draw a new hand, no parameters are necessary
-        if not hand:
+        if not hand or not holdIndices:
             return self.newHand()
 
         # shuffle deck and draw cards
@@ -148,13 +148,12 @@ class Deck(list):
         newHand = []
         newCardIndex = 0
         for i in range(5):
-            if i in holdIndices:
+            if holdIndices[i]:
                 newHand.append(hand[i])
             else:
-                newCard = self[newCardIndex]
-                while newCard in hand or newCard in newHand:
+                while self[newCardIndex] in hand or self[newCardIndex] in newHand:
                     newCardIndex += 1
-                newHand.append(newCard)
+                newHand.append(self[newCardIndex])
         return newHand
 
 
