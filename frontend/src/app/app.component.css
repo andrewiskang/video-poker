@@ -1,0 +1,192 @@
+.cards {
+  font-size: 10px;
+}
+
+@media only screen and (max-width:500px) {
+  .cards {
+    font-size: 5px;
+  }
+}
+
+/*cardem(value)
+  (value / 200 * 16)em
+
+suit-size = 5.8em
+
+suitem(value)
+  (cardem(value) / suit-size)*/
+
+.card {
+  float: left;
+  width: 16em;
+  height: 22.4em;
+  margin: 0 1.2em 1.2em 0;
+  position: relative;
+  z-index: 2;
+}
+
+.card.noshadow {
+  -moz-box-shadow: none;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+.card .heart,
+.card .diamond {
+  color: #df0000;
+}
+
+.card .corner {
+  line-height: 1;
+  /*overflow: hidden;*/
+  position: absolute;
+  text-align: center;
+}
+
+.card span {
+  display: block;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.card.number {
+  font-size: 2em;
+  height: 1.92em;
+  line-height: .96em;
+}
+
+.card.top {
+  left: .64em;
+  top: .96em;
+}
+
+.card.bottom {
+  bottom: .96em;
+  right: .64em;
+  transform: rotate(180deg));
+}
+
+.card .card-ace span.suit.middle_center {
+  font-size: 10.24em;
+  left: .46em;
+  top: .59em;
+}
+
+.card .card-ten .corner .number {
+  font-size: 1.5em;
+  /*font-stretch: condensed;
+    letter-spacing: -0.9px; // -1.8px*/
+}
+
+.card .face img {
+  position: absolute;
+  left: 2.56em;
+  top: 2.08em;
+  width: 10.8em;
+  height: 18.24em;
+}
+
+.card .suit {
+  font-size: 5.8em;
+  font-weight: normal;
+  /*bold*/
+  width: .69em;
+  height: .79em;
+  line-height: .79em;
+  /*overflow: hidden;*/
+  position: absolute;
+  text-align: center;
+}
+
+
+.suit.top_center {
+  left: 1.05em;
+  top: .33em;
+}
+
+.suit.top_left {
+  left: .41em;
+  top: .33em;
+}
+
+.suit.top_right {
+  right: .41em;
+  top: .33em;
+}
+
+.suit.middle_center {
+  left: 1.05em;
+  top: 1.52em;
+}
+
+.suit.middle_top {
+  left: 1.05em;
+  top: .97em;
+}
+
+.suit.middle_bottom {
+  bottom: .97em;
+  left: 1.05em;
+  transform: rotate(180deg));
+}
+
+.suit.middle_left {
+  left: .41em;
+  top: 1.52em;
+}
+
+.suit.middle_right {
+  right: .41em;
+  top: 1.52em;
+}
+
+.suit.middle_top_center {
+  left: 1.05em;
+  top: .83em;
+}
+
+.suit.middle_top_left {
+  left: .41em;
+  top: 1.10em;
+}
+
+.suit.middle_top_right {
+  right: .41em;
+  top: 1.10em;
+}
+
+.suit.middle_bottom_left {
+  bottom: 1.10em;
+  left: .41em;
+  transform: rotate(180deg));
+}
+
+.suit.middle_bottom_right {
+  bottom: 1.10em;
+  right: .41em;
+  transform: rotate(180deg));
+}
+
+.suit.middle_bottom_center {
+  bottom: .83em;
+  left: 1.05em;
+  transform: rotate(180deg));
+}
+
+.suit.bottom_center {
+  bottom: .33em;
+  left: 1.05em;
+  transform: rotate(180deg));
+}
+
+.suit.bottom_left {
+  bottom: .33em;
+  left: .41em;
+  transform: rotate(180deg));
+}
+
+.suit.bottom_right {
+  bottom: .33em;
+  right: .41em;
+  transform: rotate(180deg));
+}
