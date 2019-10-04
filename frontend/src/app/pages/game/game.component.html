@@ -4,7 +4,8 @@
 </div>
 <div flexLayout="row wrap" fxLayout.xs="column" fxLayoutAlign="center" fxLayoutGap="0.5rem">
   <mat-card class="card" *ngFor="let card of hand; let i=index" fxFlex="20%" (click)="holdIndices[i] = inPlay ? !holdIndices[i] : holdIndices[i]">
-    <div class="card-{{ card.rank.name }}" [style.color]="card.suit.color">
+    <ng-container *ngIf="card">
+      <div class="card-{{ card.rank.name }}" [style.color]="card.suit.color">
       <div class="corner top">
         <span class=number>{{ card.rank.symbol }}</span>
         <span>{{ card.suit.symbol }}</span>
@@ -35,6 +36,12 @@
         <span>{{ card.suit.symbol }}</span>
       </div>
     </div>
+    </ng-container>
+    <ng-container *ngIf="!card">
+      <span class="middle_center">
+        <img class="card-back" src="../../../assets/back.png">
+      </span>
+    </ng-container>
   </mat-card>
 </div>
 <div flexLayout="row" fxLayout.xs="column" fxLayoutAlign="center">
