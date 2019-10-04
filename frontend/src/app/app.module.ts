@@ -7,13 +7,21 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { HttpClientModule } from '@angular/common/http';
+import { AngularFireModule} from '@angular/fire';
+import { AngularFireAuthModule} from '@angular/fire/auth';
+import { AngularFirestoreModule} from '@angular/fire/firestore';
+import { environment } from '../environments/environment';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { LoginComponent } from './pages/login/login.component';
+import { GameComponent } from './pages/game/game.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    LoginComponent,
+    GameComponent
   ],
   imports: [
     BrowserModule,
@@ -24,7 +32,10 @@ import { AppComponent } from './app.component';
     MatButtonModule,
     MatCardModule,
     FlexLayoutModule,
-    HttpClientModule
+    HttpClientModule,
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireAuthModule,
+    AngularFirestoreModule
   ],
   providers: [],
   bootstrap: [AppComponent]
