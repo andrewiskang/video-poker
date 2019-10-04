@@ -1,7 +1,19 @@
 <mat-toolbar color="primary">
   <button mat-icon-button>
-    <mat-icon (click)="sidenav.toggle()">menu</mat-icon>
+    <fa-icon [icon]="faBars" (click)="sidenav.toggle()">menu</fa-icon>
   </button>
   <h1>Video Poker</h1>
+  <span class="fill-space"></span>
+  <button mat-button *ngIf="!user" class="login-button" routerLink="/login">Log In</button>
+  <ng-container *ngIf="user">
+    <img src="{{ user.photoURL }}" alt="displayPhoto">
+    <mat-menu #accountMenu="matMenu">
+      <button mat-menu-item (click)="signOut()">Log Out</button>
+    </mat-menu>
+    <button mat-button [matMenuTriggerFor]="accountMenu">
+      <span>{{ user.displayName }}</span>
+      <fa-icon class="dropdown-icon" [icon]="faCaretDown"></fa-icon>
+    </button>
+  </ng-container>
 </mat-toolbar>
 <router-outlet></router-outlet>
