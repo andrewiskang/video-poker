@@ -24,6 +24,7 @@ export class AppComponent implements OnInit {
 
   signOut() {
     this.authService.signOut()
+    this.user = null
   }
 }
 

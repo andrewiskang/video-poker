@@ -24,21 +24,23 @@ export class GameComponent implements OnInit {
 
   ngOnInit() {
     this.authService.user.subscribe(user => {
-      this.userId = user.uid
-      this.gameService.getGame(this.userId).subscribe(game => {
-        if (!game) {
-          this.startNewGame()
-        }
-        else {
-          if (!game.inPlay) {
-            game.hand = [null, null, null, null, null]
-            game.creditsWon = 0
-            game.outcome = ''
+      if (user) {
+        this.userId = user.uid
+        this.gameService.getGame(this.userId).subscribe(game => {
+          if (!game) {
+            this.startNewGame()
           }
-          this.updateGame(game)
-          this.holdIndices = [false, false, false, false, false]
-        }
-      })
+          else {
+            if (!game.inPlay) {
+              game.hand = [null, null, null, null, null]
+              game.creditsWon = 0
+              game.outcome = ''
+            }
+            this.updateGame(game)
+            this.holdIndices = [false, false, false, false, false]
+          }
+        })
+      }
     })
   }
 
