@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from './services/auth.service'
+
+import { faCaretDown, faBars } from '@fortawesome/free-solid-svg-icons'
 
 @Component({
   selector: 'app-root',
@@ -7,11 +10,20 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AppComponent implements OnInit {
 
-  constructor() { }
+  user: any = 'null';
+  faCaretDown = faCaretDown;
+  faBars = faBars;
+
+  constructor(private authService: AuthService) { }
 
   ngOnInit() {
-
+    this.authService.user.subscribe(user => {
+      this.user = user
+    })
   }
 
+  signOut() {
+    this.authService.signOut()
+  }
 }
 
