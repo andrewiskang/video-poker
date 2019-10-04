@@ -11,12 +11,20 @@ export class GameService extends RestService {
     super(http)
   }
 
-  drawCards(gameId: string, payload: object) {
-    return this.post('/games/' + gameId + '/draw', payload)
+  getGame(userId: string) {
+    return this.get('/games/' + userId)
   }
 
-  redrawCards(gameId: string, payload: object) {
-    return this.post('/games/' + gameId + '/redraw', payload)
+  startNewGame(userId: string, payload: object) {
+    return this.post('/games/' + userId, payload)
+  }
+
+  drawCards(userId: string, payload: object) {
+    return this.post('/games/' + userId + '/draw', payload)
+  }
+
+  redrawCards(userId: string, payload: object) {
+    return this.post('/games/' + userId + '/redraw', payload)
   }
 
 }
