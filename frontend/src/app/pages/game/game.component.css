@@ -8,13 +8,10 @@
   }
 }
 
-/*cardem(value)
-  (value / 200 * 16)em
-
-suit-size = 5.8em
-
-suitem(value)
-  (cardem(value) / suit-size)*/
+img.card-back {
+  width: 11em;
+  height: 14em;
+}
 
 .card {
   float: left;
