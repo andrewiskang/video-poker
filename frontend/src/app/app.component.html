@@ -5,7 +5,7 @@
   <h1>Video Poker</h1>
   <span class="fill-space"></span>
   <button mat-button *ngIf="!user" class="login-button" routerLink="/login">Log In</button>
-  <ng-container *ngIf="user">
+  <ng-container *ngIf="user.uid">
     <img src="{{ user.photoURL }}" alt="displayPhoto">
     <mat-menu #accountMenu="matMenu">
       <button mat-menu-item (click)="signOut()">Log Out</button>
