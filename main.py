@@ -37,7 +37,10 @@ def createGame():
         'payout': request.json.get('payout', Payout()),
         'bankroll': request.json.get('bankroll', 1000),
         'denomination': request.json.get('denomination', 1),
-        'numCredits': request.json.get('numCredits', 5)
+        'numCredits': request.json.get('numCredits', 5),
+        'outcome': None,
+        'creditsWon': 0,
+        'inPlay': False
     }
     gameRef = db.collection('games').document()
     return jsonify({
@@ -46,31 +49,51 @@ def createGame():
         'game': game
     }), 201
 
-@app.route('/api/games/<string:gameId>', methods=['GET'])
-def getGame(gameId):
-    gameRef = db.document('games/' + gameId)
+@app.route('/api/games/<string:userId>', methods=['GET'])
+def getGame(userId):
+    gameRef = db.document('games/' + userId)
     game = gameRef.get().to_dict()
     if game is None:
-        return 'Game ' + gameId + ' not found', 404
+        return ''
     return jsonify(game)
 
-@app.route('/api/games/<string:gameId>', methods=['DELETE'])
-def deleteGame(gameId):
-    gameRef = db.document('games/' + gameId)
+@app.route('/api/games/<string:userId>', methods=['POST'])
+def startNewGame(userId):
+    game = {
+        'hand': request.json.get('hand', []),
+        'payout': request.json.get('payout', Payout()),
+        'bankroll': request.json.get('bankroll', 1000),
+        'denomination': request.json.get('denomination', 1),
+        'numCredits': request.json.get('numCredits', 5),
+        'outcome': None,
+        'creditsWon': 0,
+        'inPlay': False
+    }
+    gameRef = db.collection('games').document(userId)
+    return jsonify({
+        'id': gameRef.id,
+        'update_time': gameRef.set(game).update_time.seconds,
+        'game': game
+    }), 200
+
+@app.route('/api/games/<string:userId>', methods=['DELETE'])
+def deleteGame(userId):
+    gameRef = db.document('games/' + userId)
     return jsonify({
         'time_deleted': gameRef.delete().seconds
     })
 
-@app.route('/api/games/<string:gameId>/draw', methods=['POST'])
-def draw(gameId):
-    gameRef = db.document('games/' + gameId)
+@app.route('/api/games/<string:userId>/draw', methods=['POST'])
+def draw(userId):
+    gameRef = db.document('games/' + userId)
     game = gameRef.get().to_dict()
 
     # error checking
     if game is None:
-        return 'Game ' + gameId + ' not found', 404
+        return 'Game ' + userId + ' not found', 404
     game['numCredits'] = request.json.get('numCredits', game['numCredits'])
     game['denomination'] = request.json.get('denomination', game['denomination'])
+    game['payout'] = request.json.get('payout', game['payout'])
     if game['bankroll'] < game['numCredits'] * game['denomination']:
         return 'Bankroll less than selected bet', 403
 
@@ -78,47 +101,43 @@ def draw(gameId):
     game['bankroll'] -= game['numCredits'] * game['denomination']
     game['hand'] = deck.newHand()
     game['outcome'] = Hand(game['hand']).outcome()
+    game['inPlay'] = True
+    game['creditsWon'] = 0
 
     # update state in DB
-    gameRef.update({
-        'bankroll': game['bankroll'],
-        'hand': game['hand'],
-        'denomination': game['denomination'],
-        'numCredits': game['numCredits']
-    })
+    gameRef.update(game)
 
     # return state of the game
     return jsonify(game)
 
-@app.route('/api/games/<string:gameId>/redraw', methods=['POST'])
-def redraw(gameId):
-    gameRef = db.document('games/' + gameId)
+@app.route('/api/games/<string:userId>/redraw', methods=['POST'])
+def redraw(userId):
+    gameRef = db.document('games/' + userId)
     game = gameRef.get().to_dict()
 
     # error checking
     if game is None:
-        return 'Game ' + gameId + ' not found', 404
+        return 'Game ' + userId + ' not found', 404
     if not game['hand']:
         return 'Hand is empty', 403
-    game['holdIndices'] = request.json.get('holdIndices')
-    if game['holdIndices'] is None or not isinstance(game['holdIndices'], list):
+    holdIndices = request.json.get('holdIndices')
+    if holdIndices is None or not isinstance(holdIndices, list):
         return 'Must pass card indices to hold as an array', 400
 
     # proceed with play
-    game['hand'] = deck.drawCards(game['hand'], game['holdIndices'])
+    game['hand'] = deck.drawCards(game['hand'], holdIndices)
     game['outcome'] = Hand(game['hand']).outcome()
     game['creditsWon'] =   game['numCredits'] \
                          * game['denomination'] \
                          * game['payout'].get(game['outcome'], 0)
     game['bankroll'] += game['creditsWon']
+    game['inPlay'] = False
 
     # update state in DB
-    gameRef.update({
-        'bankroll': game['bankroll'],
-        'hand': game['hand']
-    })
+    gameRef.update(game)
 
     # return state of the game
+    game['holdIndices'] = holdIndices
     return jsonify(game)
 
 
