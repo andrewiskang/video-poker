@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { GameService } from '../../services/game.service'
+import { AuthService } from '../../services/auth.service'
 
 @Component({
   selector: 'app-game',
@@ -8,21 +9,44 @@ import { GameService } from '../../services/game.service'
 })
 export class GameComponent implements OnInit {
 
-  hand: any[]
-  denomination: number = 1
-  numCredits: number = 5
-  gameId: string = 'LXgAEAK2IbTUP59KtBuR'
+  hand: any[] = [null, null, null, null, null]
+  denomination: number
+  numCredits: number
+  userId: string
   bankroll: number
   outcome: string
   payout: any
   creditsWon: number
-  inPlay: boolean = false
-  holdIndices = [false, false, false, false, false]
+  inPlay: boolean
+  holdIndices: boolean[]
 
-  constructor(private gameService: GameService) { }
+  constructor(private gameService: GameService, private authService: AuthService) { }
 
   ngOnInit() {
+    this.authService.user.subscribe(user => {
+      this.userId = user.uid
+      this.gameService.getGame(this.userId).subscribe(game => {
+        if (!game) {
+          this.startNewGame()
+        }
+        else {
+          if (!game.inPlay) {
+            game.hand = [null, null, null, null, null]
+            game.creditsWon = 0
+            game.outcome = ''
+          }
+          this.updateGame(game)
+          this.holdIndices = [false, false, false, false, false]
+        }
+      })
+    })
+  }
 
+  startNewGame() {
+    this.gameService.startNewGame(this.userId, {}).subscribe(data => {
+      console.log('new game started ' + data.update_time)
+      this.updateGame(data.game)
+    })
   }
 
   drawCards() {
@@ -30,31 +54,29 @@ export class GameComponent implements OnInit {
       denomination: this.denomination,
       numCredits: this.numCredits
     }
-    this.gameService.drawCards(this.gameId, payload).subscribe(data => {
-      this.hand = data.hand
-      this.bankroll = data.bankroll
-      this.outcome = data.outcome
-      this.creditsWon = 0
-      this.inPlay = true
+    this.gameService.drawCards(this.userId, payload).subscribe(game => {
+      this.updateGame(game)
       this.holdIndices = [false, false, false, false, false]
     })
   }
 
   redrawCards() {
     var payload = { holdIndices: this.holdIndices }
-    this.gameService.redrawCards(this.gameId, payload).subscribe(data => {
-      this.hand = data.hand
-      this.bankroll = data.bankroll
-      this.outcome = data.outcome
-      this.creditsWon = data.creditsWon
-      this.inPlay = false
+    this.gameService.redrawCards(this.userId, payload).subscribe(game => {
+      this.updateGame(game)
     })
   }
 
-  // redrawCards() {
-  //   var payload = {
-  //     holdIndices: 
-  //   }
-  // }
+  updateGame(game) {
+    this.denomination = game.denomination
+    this.numCredits = game.numCredits
+    this.bankroll = game.bankroll
+    this.hand = game.hand
+    this.payout = game.payout
+    this.creditsWon = game.creditsWon
+    this.outcome = game.outcome
+    this.inPlay = game.inPlay
+  }
+
 }
 
