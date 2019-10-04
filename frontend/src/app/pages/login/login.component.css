@@ -1,0 +1,49 @@
+.login-card {
+  width: 450px;
+  margin: 40px auto 0 auto;
+  text-align: center;
+}
+
+.login-social {
+  text-align: left;
+  margin: 5px 20px;
+  width: 230px;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.login-social:first-of-type {
+  margin-top: 20px;
+}
+
+.login-google {
+  background-color: gray;
+  color: white;
+}
+
+.login-facebook {
+  background-color: rgb(60, 90, 150);
+  color: white;
+}
+
+.login-email {
+  background-color: crimson;
+  color: white;
+}
+
+.login-phone {
+  background-color: teal;
+  color: white;
+}
+
+mat-card-title {
+  margin-bottom: 10px;
+  font-size: 30px;
+}
+
+fa-icon {
+  margin-right: 15px;
+  font-size: 20px;
+  vertical-align: middle;
+}

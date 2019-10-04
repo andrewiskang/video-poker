@@ -1,1 +1,20 @@
-<p>login works!</p>
+<mat-card class="login-card mat-elevation-z8">
+  <mat-card-title>Login</mat-card-title>
+  <mat-divider [inset]="true"></mat-divider>
+  <button mat-raised-button class="login-social login-email">
+    <fa-icon [icon]="faEnvelope"></fa-icon>
+    <span>Sign in with Email</span>
+  </button>
+  <button mat-raised-button class="login-social login-phone">
+    <fa-icon [icon]="faPhoneAlt"></fa-icon>
+    <span>Sign in with Phone</span>
+  </button>
+  <button mat-raised-button class="login-social login-google" (click)="googleLogin()">
+    <fa-icon [icon]="faGoogle"></fa-icon>
+    <span>Sign in with Google</span>
+  </button>
+  <button mat-raised-button class="login-social login-facebook">
+    <fa-icon [icon]="faFacebookSquare"></fa-icon>
+    <span>Sign in with Facebook</span>
+  </button>
+</mat-card>
