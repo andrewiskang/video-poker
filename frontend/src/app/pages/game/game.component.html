@@ -1,6 +1,6 @@
 <div class="main">
   <div fxLayoutAlign="center">
-    <span class="outcome">{{ outcome }}</span>
+    <span class="outcome">{{ outcome ? outcome : ' ' }}</span>
   </div>
   <div fxLayoutAlign="center">
     <ng-container *ngFor="let card of hand">
@@ -10,12 +10,12 @@
       </div>
     </ng-container>
   </div>
+  <hr>
   <div fxLayoutAlign="center">
     <div *ngFor="let card of hand" fxFlex="20%" fxLayoutAlign="center">
       <span class="held" [ngStyle]="{'visibility': card?.held ? 'visible' : 'hidden'}">HELD</span>
     </div>
   </div>
-  <hr>
   <div class="credits" fxLayoutAlign="space-between">
     <span [ngStyle]="{'visibility': creditsWon ? 'visible' : 'hidden'}">{{ 'WIN ' + creditsWon }}</span>
     <span *ngIf="bankroll">{{ 'CREDIT ' + bankroll }}</span>

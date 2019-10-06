@@ -12,18 +12,18 @@
 }
 
 .outcome {
-  font-size: 14px;
-  min-height: 1em;
+  font-size: 18px;
+  height: 3em;
+  line-height: 3em;
 }
 
 .credits {
   font-size: 22px;
-  font-weight: 400;
-  margin: 10px 10px;
+  margin: 10px;
 }
 
 .held {
-  margin: .5em;
+  margin-bottom: 1em;
   visibility: visible;
   font-size: 18px;
   font-weight: 500;
