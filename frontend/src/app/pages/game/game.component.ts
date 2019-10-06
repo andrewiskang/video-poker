@@ -13,7 +13,7 @@ export class GameComponent implements OnInit {
   denomination: number
   numCredits: number
   userId: string
-  bankroll: number
+  bankroll: number = 0
   outcome: string
   payout: any
   creditsWon: number
