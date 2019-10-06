@@ -19,8 +19,9 @@ __pycache__/
 /setup.cfg
 
 
-frontend/
-!frontend/dist/
+e2e
+src
+node_modules
 ^(.*/)?\..*$
 ^(.*/)?.*\.json$
 ^(.*/)?.*\.md$
