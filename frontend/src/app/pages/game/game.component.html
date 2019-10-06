@@ -1,52 +1,15 @@
-<!-- <md-card class="card md-whiteframe-3dp" ng-class="{\'md-whiteframe-15dp\' : vm.hoverCard}" *ngIf="vm.card !=null && !vm.card.hideValue" ng-mouseenter=vm.toggleHover() ng-mouseleave=vm.toggleHover() ng-click=vm.toggleBackside()> -->
 <div flexLayout="row" fxLayout.xs="column" fxLayoutAlign="center">
   <span class="outcome">{{ outcome }}</span>
 </div>
-<div flexLayout="row wrap" fxLayout.xs="column" fxLayoutAlign="center" fxLayoutGap="0.5rem">
-  <mat-card class="card" *ngFor="let card of hand; let i=index" fxFlex="20%" (click)="holdIndices[i] = inPlay ? !holdIndices[i] : holdIndices[i]">
-    <ng-container *ngIf="card">
-      <div class="card-{{ card.rank.name }}" [style.color]="card.suit.color">
-      <div class="corner top">
-        <span class=number>{{ card.rank.symbol }}</span>
-        <span>{{ card.suit.symbol }}</span>
-      </div>
-      <span class="suit top_left" *ngIf="[4,5,6,7,8,9,10].indexOf(card.rank.value) > -1">{{ card.suit.symbol }}</span>
-      <span class="suit top_center" *ngIf="[2].indexOf(card.rank.value) > -1">{{ card.suit.symbol }}</span>
-      <span class="suit top_right" *ngIf="[4,5,6,7,8,9,10].indexOf(card.rank.value) > -1">{{ card.suit.symbol }}</span>
-      <span class="suit middle_top_left" *ngIf="[9,10].indexOf(card.rank.value) > -1">{{ card.suit.symbol }}</span>
-      <span class="suit middle_top_center" *ngIf="[10].indexOf(card.rank.value) > -1">{{ card.suit.symbol }}</span>
-      <span class="suit middle_left" *ngIf="[6,7,8].indexOf(card.rank.value) > -1">{{ card.suit.symbol }}</span>
-      <span class="suit middle_top" *ngIf="[7,8].indexOf(card.rank.value) > -1">{{ card.suit.symbol }}</span>
-      <span class="suit middle_center" *ngIf="[3,5,9].indexOf(card.rank.value) > -1">{{ card.suit.symbol }}</span>
-      <span class="suit middle_top_right" *ngIf="[9,10].indexOf(card.rank.value) > -1">{{ card.suit.symbol }}</span>
-      <span class="suit middle_bottom" *ngIf="[8].indexOf(card.rank.value) > -1">{{ card.suit.symbol }}</span>
-      <span class="suit middle_right" *ngIf="[6,7,8].indexOf(card.rank.value) > -1">{{ card.suit.symbol }}</span>
-      <span class="suit bottom_left" *ngIf="[4,5,6,7,8,9,10].indexOf(card.rank.value) > -1">{{ card.suit.symbol }}</span>
-      <span class="suit bottom_center" *ngIf="[2].indexOf(card.rank.value) > -1">{{ card.suit.symbol }}</span>
-      <span class="suit bottom_right" *ngIf="[4,5,6,7,8,9,10].indexOf(card.rank.value) > -1">{{ card.suit.symbol }}</span>
-      <span class="suit middle_bottom_left" *ngIf="[9,10].indexOf(card.rank.value) > -1">{{ card.suit.symbol }}</span>
-      <span class="suit middle_bottom_center" *ngIf="[10].indexOf(card.rank.value) > -1">{{ card.suit.symbol }}</span>
-      <span class="suit middle_bottom_right" *ngIf="[9,10].indexOf(card.rank.value) > -1">{{ card.suit.symbol }}</span>
-      <span class="face middle_center" *ngIf="[11,12,13].indexOf(card.rank.value) > -1">
-        <img src="../../../assets/faces/face-{{ card.rank.name }}-{{ card.suit.name}}.png">
-      </span>
-      <span class="suit middle_center" *ngIf="[1].indexOf(card.rank.value) > -1">{{ card.suit.symbol }}</span>
-      <div class="corner bottom">
-        <span class=number>{{ card.rank.symbol }}</span>
-        <span>{{ card.suit.symbol }}</span>
-      </div>
-    </div>
-    </ng-container>
-    <ng-container *ngIf="!card">
-      <span class="middle_center">
-        <img class="card-back" src="../../../assets/back.png">
-      </span>
-    </ng-container>
-  </mat-card>
+<div flexLayout="row wrap" fxLayout.xs="column" fxLayoutAlign="center">
+  <ng-container *ngFor="let card of hand">
+    <img src="../../../assets/{{ card.rank }}-{{ card.suit }}.png" alt="{{ card.rank }} of {{ card.suit }}s" *ngIf="card" fxFlex="20%" (click)="card.held = inPlay ? !card.held : card.held">
+    <img src="../../../assets/card-back.png" alt="card-back" *ngIf="!card" fxFlex="20%">
+  </ng-container>
 </div>
 <div flexLayout="row" fxLayout.xs="column" fxLayoutAlign="center">
-  <div *ngFor="let hold of holdIndices" fxFlex="20%" fxLayoutAlign="center">
-    <span [ngStyle]="{'visibility': hold ? 'visible' : 'hidden'}">HOLD</span>
+  <div *ngFor="let card of hand" fxFlex="20%" fxLayoutAlign="center">
+    <span [ngStyle]="{'visibility': card?.held ? 'visible' : 'hidden'}">HOLD</span>
   </div>
 </div>
 <div flexLayout="row" fxLayout.xs="column" fxLayoutAlign="space-between">
@@ -57,4 +20,3 @@
   <button *ngIf="!inPlay" mat-button (click)="drawCards()">DRAW</button>
   <button *ngIf="inPlay" mat-button (click)="redrawCards()">REDRAW</button>
 </div>
-<!-- </md-card> -->
