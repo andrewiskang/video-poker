@@ -18,7 +18,6 @@ export class GameComponent implements OnInit {
   payout: any
   creditsWon: number
   inPlay: boolean
-  holdIndices: boolean[]
 
   constructor(private gameService: GameService, private authService: AuthService) { }
 
@@ -27,6 +26,7 @@ export class GameComponent implements OnInit {
       if (user) {
         this.userId = user.uid
         this.gameService.getGame(this.userId).subscribe(game => {
+          console.log(game)
           if (!game) {
             this.startNewGame()
           }
@@ -37,7 +37,6 @@ export class GameComponent implements OnInit {
               game.outcome = ''
             }
             this.updateGame(game)
-            this.holdIndices = [false, false, false, false, false]
           }
         })
       }
@@ -47,6 +46,7 @@ export class GameComponent implements OnInit {
   startNewGame() {
     this.gameService.startNewGame(this.userId, {}).subscribe(data => {
       console.log('new game started ' + data.update_time)
+      data.game.hand = [null, null, null, null, null]
       this.updateGame(data.game)
     })
   }
@@ -58,12 +58,11 @@ export class GameComponent implements OnInit {
     }
     this.gameService.drawCards(this.userId, payload).subscribe(game => {
       this.updateGame(game)
-      this.holdIndices = [false, false, false, false, false]
     })
   }
 
   redrawCards() {
-    var payload = { holdIndices: this.holdIndices }
+    var payload = { hand: this.hand }
     this.gameService.redrawCards(this.userId, payload).subscribe(game => {
       this.updateGame(game)
     })

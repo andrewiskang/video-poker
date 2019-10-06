@@ -16,10 +16,6 @@ deck = Deck()
 app = Flask(__name__)
 CORS(app)
 
-@app.route('/')
-def index():
-    return 'Video Poker!'
-
 @app.route('/api/games', methods=['GET'])
 def getGames():
     games = []
@@ -120,12 +116,16 @@ def redraw(userId):
         return 'Game ' + userId + ' not found', 404
     if not game['hand']:
         return 'Hand is empty', 403
-    holdIndices = request.json.get('holdIndices')
-    if holdIndices is None or not isinstance(holdIndices, list):
-        return 'Must pass card indices to hold as an array', 400
+    hand = request.json.get('hand')
+    if hand is None or not isinstance(hand, list):
+        return 'Must pass hand', 403
+
+    # db hand is source of truth - use payload hand for holding purposes only
+    for i in range(5):
+        game['hand'][i]['held'] = hand[i]['held']
 
     # proceed with play
-    game['hand'] = deck.drawCards(game['hand'], holdIndices)
+    game['hand'] = deck.drawCards(game['hand'])
     game['outcome'] = Hand(game['hand']).outcome()
     game['creditsWon'] =   game['numCredits'] \
                          * game['denomination'] \
@@ -137,7 +137,6 @@ def redraw(userId):
     gameRef.update(game)
 
     # return state of the game
-    game['holdIndices'] = holdIndices
     return jsonify(game)
 
 

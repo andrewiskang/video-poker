@@ -1,102 +1,31 @@
 import random
 from collections import defaultdict
 
-RANKS = [
-    {
-        'value': 1,
-        'symbol': 'A',
-        'name': 'ace'
-    },
-    {
-        'value': 2,
-        'symbol': '2',
-        'name': 'two'
-    },
-    {
-        'value': 3,
-        'symbol': '3',
-        'name': 'three'
-    },
-    {
-        'value': 4,
-        'symbol': '4',
-        'name': 'four'
-    },
-    {
-        'value': 5,
-        'symbol': '5',
-        'name': 'five'
-    },
-    {
-        'value': 6,
-        'symbol': '6',
-        'name': 'six'
-    },
-    {
-        'value': 7,
-        'symbol': '7',
-        'name': 'seven'
-    },
-    {
-        'value': 8,
-        'symbol': '8',
-        'name': 'eight'
-    },
-    {
-        'value': 9,
-        'symbol': '9',
-        'name': 'nine'
-    },
-    {
-        'value': 10,
-        'symbol': '10',
-        'name': 'ten'
-    },
-    {
-        'value': 11,
-        'symbol': 'J',
-        'name': 'jack'
-    },
-    {
-        'value': 12,
-        'symbol': 'Q',
-        'name': 'queen'
-    },
-    {
-        'value': 13,
-        'symbol': 'K',
-        'name': 'king'
-    }
-]
-SUITS = [
-    {
-        'symbol': '♠',
-        'name': 'spade',
-        'color': 'black'
-    },
-    {
-        'symbol': '♥',
-        'name': 'heart',
-        'color': 'red'
-    },
-    {
-        'symbol': '♣',
-        'name': 'club',
-        'color': 'black'
-    },
-    {
-        'symbol': '♦',
-        'name': 'diamond',
-        'color': 'red'
-    }
-]
+RANKS = {
+    1: 'A',
+    2: '2',
+    3: '3',
+    4: '4',
+    5: '5',
+    6: '6',
+    7: '7',
+    8: '8',
+    9: '9',
+    10: '10',
+    11: 'J',
+    12: 'Q',
+    13: 'K',
+}
+SUITS = ['spade', 'heart', 'club', 'diamond']
 
 
 class Card(object):
     # a Card has two characteristics: a rank (number) and a suit
-    def __init__(self, rank, suit):
+    def __init__(self, rank, suit, value, held):
         self.rank = rank
         self.suit = suit
+        self.value = value
+        self.held = held
 
     def __eq__(self, other):
         # overrides == function for comparison purposes
@@ -110,26 +39,18 @@ class Card(object):
 
     def fullName(self):
         # returns Card name as a string in the form '<rank> of <suit>'
-        return self.rank['name'].capitalize() + ' of ' + self.suit['name'].capitalize() + 's'
+        return self.rank.capitalize() + ' of ' + self.suit.capitalize() + 's'
 
     def printName(self):
         # prints out full card name
         print(self.fullName())
-
-    def rankValue(self):
-        # given a rank-suit string, return the rank value of the given string (int)
-        return self.rank['value']
-
-    def suitSymbol(self):
-        # given a rank-suit string, return the suit of the given string (string)
-        return self.suit['symbol']
 
 
 class Deck(list):
     # a Deck contains card strings to be drawn into or pulled out of a hand
     def __init__(self):
         # returns a Deck of 52 cards: 13 ranks of 4 suits each
-        super(Deck, self).__init__([{'rank': rank, 'suit': suit} for rank in RANKS for suit in SUITS])
+        super(Deck, self).__init__([{'rank': symbol, 'suit': suit, 'value': value, 'held': False} for (value, symbol) in RANKS.items() for suit in SUITS])
 
     def newHand(self):
         # given a Deck, shuffles and draws 5 cards from the top of the Deck
@@ -137,19 +58,19 @@ class Deck(list):
         newCards = self[:5]
         return newCards
 
-    def drawCards(self, hand, holdIndices):
+    def drawCards(self, hand):
         # redraws cards not in holdIndices parameter within the given Hand
         # to draw a new hand, no parameters are necessary
-        if not hand or not holdIndices:
+        if not hand:
             return self.newHand()
 
         # shuffle deck and draw cards
         random.shuffle(self)
         newHand = []
         newCardIndex = 0
-        for i in range(5):
-            if holdIndices[i]:
-                newHand.append(hand[i])
+        for card in hand:
+            if card['held']:
+                newHand.append(card)
             else:
                 while self[newCardIndex] in hand or self[newCardIndex] in newHand:
                     newCardIndex += 1
@@ -158,7 +79,7 @@ class Deck(list):
 
 
 class Hand(list):
-    # a Hand contains 5 card strings from a deck of 52 cards
+    # a Hand contains 5 cards from a deck of 52 cards
     def printHand(self):
         # prints out a visual representation of the Cards in the given Hand
         cardInfo = []
@@ -177,9 +98,8 @@ class Hand(list):
         rankTally = defaultdict(int)
         suitTally = defaultdict(int)
         for card in self:
-            c = Card(card['rank'], card['suit'])
-            rankTally[c.rankValue()] += 1
-            suitTally[c.suitSymbol()] += 1
+            rankTally[card['value']] += 1
+            suitTally[card['suit']] += 1
 
         ## store max frequency of ranks and suits for evaluation purposes
         # also store ranks and rank frequency
@@ -195,14 +115,15 @@ class Hand(list):
         isFlush = (maxSuitTally == 5)
         # a straight is 5 consecutive ranks or 10-J-Q-K-A
         lowestRank = ranks[0]
-        isStraight = (ranks == range(lowestRank, lowestRank+5) or
-                       ranks == [1, 10, 11, 12, 13])
+        isRoyal = ranks == [1, 10, 11, 12, 13]
+        isStraight = ranks == range(lowestRank, lowestRank+5) or isRoyal
+                       
 
         ## logic progression to determine winning outcome of given Hand
         # a straight flush is both a straight and a flush
         if isFlush and isStraight:
             # a royal flush is 10, J, Q, K, A, all with the same suit
-            if ranks == [1, 10, 11, 12, 13]:
+            if isRoyal:
                 return 'Royal Flush'
             else:
                 return 'Straight Flush'
