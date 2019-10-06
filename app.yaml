@@ -4,11 +4,16 @@ handlers:
 - url: /api/.*
   script: auto
   secure: always
-- url: /
+  redirect_http_response_code: 301
+
+- url: /(.*\..*)
+  secure: always
+  redirect_http_response_code: 301
+  static_files: frontend/dist/frontend/\1
+  upload: frontend/dist/frontend/.*
+
+- url: /.*
   static_files: frontend/dist/frontend/index.html
   upload: frontend/dist/frontend/index.html
   secure: always
-- url: /
-  static_dir: frontend/dist/frontend
-  secure: always
-
+  redirect_http_response_code: 301
