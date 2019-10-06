@@ -18,7 +18,8 @@
   <hr>
   <div class="credits" fxLayoutAlign="space-between">
     <span [ngStyle]="{'visibility': creditsWon ? 'visible' : 'hidden'}">{{ 'WIN ' + creditsWon }}</span>
-    <span>{{ 'CREDIT ' + bankroll }}</span>
+    <span *ngIf="bankroll">{{ 'CREDIT ' + bankroll }}</span>
+    <span *ngIf="!bankroll">Loading</span>
   </div>
   <div fxLayoutAlign="center">
     <button class="draw-button" *ngIf="!inPlay" mat-raised-button (click)="drawCards()">PLAY</button>

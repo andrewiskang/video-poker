@@ -13,7 +13,7 @@ export class GameComponent implements OnInit {
   denomination: number
   numCredits: number
   userId: string
-  bankroll: number = 0
+  bankroll: number
   outcome: string
   payout: any
   creditsWon: number
@@ -52,6 +52,7 @@ export class GameComponent implements OnInit {
   }
 
   drawCards() {
+    this.hand = [null, null, null, null, null]
     var payload = {
       denomination: this.denomination,
       numCredits: this.numCredits
@@ -62,7 +63,13 @@ export class GameComponent implements OnInit {
   }
 
   redrawCards() {
-    var payload = { hand: this.hand }
+    var payload = { hand: [...this.hand] }
+    for (let i = 0; i < this.hand.length; i++) {
+      if (!this.hand[i].held) {
+        this.hand[i] = null
+      }
+    }
+    console.log(payload)
     this.gameService.redrawCards(this.userId, payload).subscribe(game => {
       this.updateGame(game)
     })
