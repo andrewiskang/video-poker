@@ -1,22 +1,27 @@
-<div fxLayoutAlign="center">
-  <span class="outcome">{{ outcome }}</span>
-</div>
-<div fxLayoutAlign="center">
-  <ng-container *ngFor="let card of hand">
-    <img src="../../../assets/{{ card.rank }}-{{ card.suit }}.png" alt="{{ card.rank }} of {{ card.suit }}s" *ngIf="card" fxFlex="20%" (click)="card.held = inPlay ? !card.held : card.held">
-    <img src="../../../assets/card-back.png" alt="card-back" *ngIf="!card" fxFlex="20%">
-  </ng-container>
-</div>
-<div fxLayoutAlign="center">
-  <div *ngFor="let card of hand" fxFlex="20%" fxLayoutAlign="center">
-    <span [ngStyle]="{'visibility': card?.held ? 'visible' : 'hidden'}">HOLD</span>
+<div class="main">
+  <div fxLayoutAlign="center">
+    <span class="outcome">{{ outcome }}</span>
   </div>
-</div>
-<div fxLayoutAlign="space-between">
-  <span [ngStyle]="{'visibility': creditsWon ? 'visible' : 'hidden'}">{{ 'WIN ' + creditsWon }}</span>
-  <span>{{ 'CREDIT ' + bankroll }}</span>
-</div>
-<div fxLayoutAlign="center">
-  <button *ngIf="!inPlay" mat-button (click)="drawCards()">DRAW</button>
-  <button *ngIf="inPlay" mat-button (click)="redrawCards()">REDRAW</button>
+  <div fxLayoutAlign="center">
+    <ng-container *ngFor="let card of hand">
+      <div fxFlex="20%">
+        <img src="../../../assets/{{ card.rank }}-{{ card.suit }}.png" alt="{{ card.rank }} of {{ card.suit }}s" *ngIf="card" (click)="card.held = inPlay ? !card.held : card.held" fxFlex=100%>
+        <img src="../../../assets/card-back.png" alt="card-back" *ngIf="!card" fxFlex=100%>
+      </div>
+    </ng-container>
+  </div>
+  <div fxLayoutAlign="center">
+    <div *ngFor="let card of hand" fxFlex="20%" fxLayoutAlign="center">
+      <span class="held" [ngStyle]="{'visibility': card?.held ? 'visible' : 'hidden'}">HELD</span>
+    </div>
+  </div>
+  <hr>
+  <div class="credits" fxLayoutAlign="space-between">
+    <span [ngStyle]="{'visibility': creditsWon ? 'visible' : 'hidden'}">{{ 'WIN ' + creditsWon }}</span>
+    <span>{{ 'CREDIT ' + bankroll }}</span>
+  </div>
+  <div fxLayoutAlign="center">
+    <button class="draw-button" *ngIf="!inPlay" mat-raised-button (click)="drawCards()">PLAY</button>
+    <button class="draw-button" *ngIf="inPlay" mat-raised-button (click)="redrawCards()">DRAW</button>
+  </div>
 </div>
