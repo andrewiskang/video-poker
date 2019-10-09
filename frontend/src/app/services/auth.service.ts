@@ -42,9 +42,15 @@ export class AuthService {
   }
 
   private oAuthLogin(provider) {
-    return this.afAuth.auth.signInWithPopup(provider)
-      .then((credential) => {
-        this.updateUserData(credential.user)
+    return this.afAuth.auth.signInWithRedirect(provider)
+      .then(() => {
+        this.afAuth.auth.getRedirectResult()
+          .then((credential) => {
+            this.updateUserData(credential.user)
+          })
+      })
+      .catch(error => {
+        console.log(error)
       })
   }
 
