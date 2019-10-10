@@ -8,11 +8,10 @@ import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
 interface User {
-  uid: string;
-  email: string;
-  photoURL?: string;
-  displayName?: string;
-  favoriteColor?: string;
+  uid: string
+  email: string
+  photoURL?: string
+  displayName?: string
 }
 
 
@@ -21,7 +20,7 @@ interface User {
 })
 export class AuthService {
 
-  user: Observable<User>;
+  user: Observable<User>
 
   constructor(private afAuth: AngularFireAuth, private afs: AngularFirestore, private router: Router) {
     //// Get auth data, then get firestore user document || null
@@ -38,7 +37,13 @@ export class AuthService {
 
   googleLogin() {
     const provider = new auth.GoogleAuthProvider()
-    return this.oAuthLogin(provider);
+    return this.oAuthLogin(provider)
+  }
+
+  facebookLogin() {
+    var provider = new auth.FacebookAuthProvider()
+    provider.addScope('email');
+    return this.oAuthLogin(provider)
   }
 
   private oAuthLogin(provider) {
@@ -56,7 +61,7 @@ export class AuthService {
 
   private updateUserData(user) {
     // Sets user data to firestore on login
-    const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
+    const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`)
     const data: User = {
       uid: user.uid,
       email: user.email,
@@ -68,7 +73,7 @@ export class AuthService {
 
   signOut() {
     this.afAuth.auth.signOut().then(() => {
-      this.router.navigate(['/login']);
+      this.router.navigate(['/login'])
     });
   }
 }
