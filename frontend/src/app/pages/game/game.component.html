@@ -4,15 +4,15 @@
   </div>
   <div fxLayoutAlign="center">
     <ng-container *ngFor="let card of hand">
-      <div fxFlex="20%">
-        <img src="../../../assets/{{ card.rank }}-{{ card.suit }}.png" alt="{{ card.rank }} of {{ card.suit }}s" *ngIf="card" (click)="card.held = inPlay ? !card.held : card.held" fxFlex=100%>
-        <img src="../../../assets/card-back.png" alt="card-back" *ngIf="!card" fxFlex=100%>
+      <div class="card" fxFlex="20">
+        <img src="../../../assets/{{ card.rank }}-{{ card.suit }}.png" alt="{{ card.rank }} of {{ card.suit }}s" *ngIf="card" (click)="card.held = inPlay ? !card.held : card.held">
+        <img src="../../../assets/card-back.png" alt="card-back" *ngIf="!card">
       </div>
     </ng-container>
   </div>
   <hr>
   <div fxLayoutAlign="center">
-    <div *ngFor="let card of hand" fxFlex="20%" fxLayoutAlign="center">
+    <div *ngFor="let card of hand" fxFlex="20" fxLayoutAlign="center">
       <span class="held" [ngStyle]="{'visibility': card?.held ? 'visible' : 'hidden'}">HELD</span>
     </div>
   </div>
