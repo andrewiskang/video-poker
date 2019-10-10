@@ -23,7 +23,7 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
     this.authService.user.subscribe(user => {
       if (user) {
-        console.log('already logged in')
+        // console.log('already logged in')
         this.router.navigateByUrl('/')
       }
     })
