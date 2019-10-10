@@ -24,6 +24,15 @@ export class AuthService {
 
   constructor(private afAuth: AngularFireAuth, private afs: AngularFirestore, private router: Router) {
     //// Get auth data, then get firestore user document || null
+    this.afAuth.auth.getRedirectResult() // record to firestore on successful redirect
+      .then(credential => {
+        if (credential.user) {
+          this.updateUserData(credential.user)
+        }
+      })
+      .catch(error => {
+        console.log(error)
+      })
     this.user = this.afAuth.authState.pipe(
       switchMap(user => {
         if (user) {
@@ -48,18 +57,10 @@ export class AuthService {
 
   private oAuthLogin(provider) {
     return this.afAuth.auth.signInWithRedirect(provider)
-      .then(() => {
-        this.afAuth.auth.getRedirectResult()
-          .then((credential) => {
-            this.updateUserData(credential.user)
-          })
-      })
-      .catch(error => {
-        console.log(error)
-      })
   }
 
   private updateUserData(user) {
+
     // Sets user data to firestore on login
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`)
     const data: User = {
