@@ -24,19 +24,26 @@ export class AuthService {
 
   constructor(private afAuth: AngularFireAuth, private afs: AngularFirestore, private router: Router) {
     //// Get auth data, then get firestore user document || null
-    this.afAuth.auth.getRedirectResult()
-      .then(credential => {
-        if (credential.user) {
-          this.updateUserData(credential.user)
-        }
-      })
-      .catch(error => {
-        console.log(error)
-      })
+    // this.afAuth.auth.getRedirectResult()
+    //   .then(credential => {
+    //     if (credential.user) {
+    //       console.log(credential.user)
+    //       this.updateUserData(credential.user)
+    //     }
+    //   })
+    //   .catch(error => {
+    //     console.log(error)
+    //   })
     this.user = this.afAuth.authState.pipe(
       switchMap(user => {
         if (user) {
-          return this.afs.doc<User>(`users/${user.uid}`).valueChanges()
+          var obs = this.afs.doc<User>(`users/${user.uid}`).valueChanges()
+          obs.subscribe(data => {
+            if (!data) {
+              this.updateUserData(user)
+            }
+          })
+          return obs
         }
         else {
           return of(null)
@@ -52,11 +59,15 @@ export class AuthService {
 
   facebookLogin() {
     var provider = new auth.FacebookAuthProvider()
-    provider.addScope('email');
+    provider.addScope('email')
     return this.oAuthLogin(provider)
   }
 
   private oAuthLogin(provider) {
+    // return this.afAuth.auth.signInWithPopup(provider)
+    //     .then(credential =>  {
+    //         this.updateUserData(credential.user)
+    //     })
     return this.afAuth.auth.signInWithRedirect(provider)
   }
 
