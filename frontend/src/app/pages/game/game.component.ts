@@ -26,7 +26,7 @@ export class GameComponent implements OnInit {
       if (user) {
         this.userId = user.uid
         this.gameService.getGame(this.userId).subscribe(game => {
-          console.log(game)
+          // console.log(game)
           if (!game) {
             this.startNewGame()
           }
@@ -69,7 +69,7 @@ export class GameComponent implements OnInit {
         this.hand[i] = null
       }
     }
-    console.log(payload)
+    // console.log(payload)
     this.gameService.redrawCards(this.userId, payload).subscribe(game => {
       this.updateGame(game)
     })
