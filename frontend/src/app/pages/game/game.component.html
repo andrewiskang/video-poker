@@ -5,8 +5,8 @@
   <div fxLayoutAlign="center">
     <ng-container *ngFor="let card of hand">
       <div class="card" fxFlex="20">
-        <img src="../../../assets/{{ card.rank }}-{{ card.suit }}.png" alt="{{ card.rank }} of {{ card.suit }}s" *ngIf="card" (click)="card.held = inPlay ? !card.held : card.held">
-        <img src="../../../assets/card-back.png" alt="card-back" *ngIf="!card">
+        <img class="card-front" src="../../../assets/{{ card.rank }}-{{ card.suit }}.png" alt="{{ card.rank }} of {{ card.suit }}s" *ngIf="card" (click)="card.held = inPlay ? !card.held : card.held">
+        <img src="../../../assets/card-back.png" alt="card-back">
       </div>
     </ng-container>
   </div>
