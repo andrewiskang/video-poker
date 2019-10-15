@@ -13,20 +13,20 @@ export class GameComponent implements OnInit {
   denomination: number
   numCredits: number
   userId: string
-  bankroll: number
+  bankroll: number = 0
   outcome: string
   payout: any
-  creditsWon: number
+  creditsWon: number = 0
   inPlay: boolean
 
   constructor(private gameService: GameService, private authService: AuthService) { }
 
   ngOnInit() {
     this.authService.user.subscribe(user => {
+      // console.log(user)
       if (user) {
         this.userId = user.uid
         this.gameService.getGame(this.userId).subscribe(game => {
-          // console.log(game)
           if (!game) {
             this.startNewGame()
           }
