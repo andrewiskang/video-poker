@@ -21,12 +21,7 @@ export class LoginComponent implements OnInit {
   constructor(private authService: AuthService, private router: Router) { }
 
   ngOnInit() {
-    this.authService.user.subscribe(user => {
-      if (user) {
-        // console.log('already logged in')
-        this.router.navigateByUrl('/')
-      }
-    })
+    this.authService.onRefresh()
   }
 
   googleLogin() {

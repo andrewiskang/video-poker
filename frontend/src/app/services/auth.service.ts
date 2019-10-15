@@ -5,7 +5,7 @@ import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firest
 import { auth } from 'firebase/app';
 
 import { Observable, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, share } from 'rxjs/operators';
 
 interface User {
   uid: string
@@ -37,18 +37,13 @@ export class AuthService {
     this.user = this.afAuth.authState.pipe(
       switchMap(user => {
         if (user) {
-          var obs = this.afs.doc<User>(`users/${user.uid}`).valueChanges()
-          obs.subscribe(data => {
-            if (!data) {
-              this.updateUserData(user)
-            }
-          })
-          return obs
+          return this.afs.doc<User>(`users/${user.uid}`).valueChanges()
         }
         else {
           return of(null)
         }
-      })
+      }),
+      share()
     )
   }
 
@@ -85,7 +80,31 @@ export class AuthService {
 
   signOut() {
     this.afAuth.auth.signOut().then(() => {
+      this.user = null
       window.location.reload()
     });
+  }
+
+  onRefresh() {
+    this.afAuth.auth.getRedirectResult()
+      .then(credential => {
+        if (credential.user) {
+          this.updateUserData(credential.user)
+          this.user = this.afs.doc<User>(`users/${credential.user.uid}`).valueChanges()
+          this.router.navigateByUrl('/')
+        }
+        else {
+          this.user.subscribe(user => {
+            console.log('got here')
+            if (user) {
+              this.router.navigateByUrl('/')
+              window.location.reload() // need this to refresh game.component
+            }
+          })
+        }
+      })
+      .catch(error => {
+        console.log(error)
+      })
   }
 }
