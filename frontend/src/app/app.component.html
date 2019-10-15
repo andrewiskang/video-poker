@@ -5,6 +5,8 @@
   </button>
   <h1>Video Poker</h1>
   <span class="fill-space"></span>
+  <span *ngIf="user == 'null'"></span>
+  <button mat-button *ngIf="user == 'null'" class="login-button">Loading...</button>
   <button mat-button *ngIf="!user" class="login-button" routerLink="/login">Log In</button>
   <ng-container *ngIf="user?.uid">
     <img src="{{ user.photoURL }}" alt="displayPhoto">
