@@ -116,7 +116,7 @@ class Hand(list):
         # a straight is 5 consecutive ranks or 10-J-Q-K-A
         lowestRank = ranks[0]
         isRoyal = ranks == [1, 10, 11, 12, 13]
-        isStraight = ranks == range(lowestRank, lowestRank+5) or isRoyal
+        isStraight = ranks == [lowestRank + i for i in range(5)] or isRoyal
                        
 
         ## logic progression to determine winning outcome of given Hand
